@@ -32,6 +32,7 @@ module.exports = {
   },
   networks: {
     hardhat: {
+      name: "localhost",
       chainId: 1337
     },
     // ropsten: {
