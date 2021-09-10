@@ -21,14 +21,14 @@ module.exports = {
   solidity: {
     version: "0.8.0",
     paths:{
-      artifacts: "./hardhat/src/artifacts"
+      artifacts: "./front-end/src/artifacts"
     },
-    settings : {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      }
-    }
+    // settings : {
+    //   optimizer: {
+    //     enabled: true,
+    //     runs: 200
+    //   }
+    // }
   },
   networks: {
     hardhat: {
