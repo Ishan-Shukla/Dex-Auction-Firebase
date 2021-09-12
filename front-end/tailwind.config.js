@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        "Line-Background": "url('/src/img/Curve_Line.svg')",
-        "Logo": "url('/src/img/Logo.jpg')",
+        "Subtle-Background": "url('/src/img/Subtle.svg')",
+        "Logo": "url('/src/img/Logo.svg')",
       },
       boxShadow:{
         bar: "0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
