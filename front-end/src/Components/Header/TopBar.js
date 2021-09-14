@@ -3,9 +3,7 @@ import Connect from "./Connect";
 import Logo from "./Logo";
 
 function TopBar(props) {
-  const ConnectMe = () => {
-    props.ConnectMe()
-  }
+  const account = props.ConnectMe;
   return (
     <div className="flex fixed top-0 z-50 bg-blue-200 bg-opacity-20 backdrop-filter shadow-bar backdrop-blur-md backdrop-brightness-95 min-w-full p-4">
       <div className="flex-none">
@@ -13,7 +11,11 @@ function TopBar(props) {
       </div>
       <div className="flex-grow"></div>
       <div className="flex-none">
-        <Connect ConnectMe={ConnectMe} />
+        {/* <Connect ConnectMe={ConnectMe} /> */}
+        {/* <p className="text-lg font-light">{account}</p> */}
+        {/* <svg width="80" height="80" data-jdenticon-value={props.ConnectMe.toString()}>
+          Fallback text for browsers not supporting inline svg
+        </svg> */}
       </div>
     </div>
   );
