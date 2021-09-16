@@ -60,7 +60,7 @@ const Mint = (props) => {
 
   return (
     <div className="min-w-full">
-      <div className=" w-1/2 mx-auto pt-48 flex flex-col justify-center pb-12">
+      <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
         <input
           placeholder="Asset Name"
           className="mt-8 border rounded p-4"

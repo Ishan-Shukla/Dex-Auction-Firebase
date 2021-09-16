@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import MarketPlace from "./pages/MarketPlace";
 import MyAssets from "./pages/MyAssets";
 import Mint from "./pages/MyAssets/Mint";
-import { Asset } from "./pages/MyAssets/Asset";
+import { Asset } from "./pages/MyAssets/NFTView";
 
 export const MetamaskProvider = React.createContext();
 export const UserAccount = React.createContext();

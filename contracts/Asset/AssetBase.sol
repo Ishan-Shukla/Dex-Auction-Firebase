@@ -7,7 +7,10 @@ import "../Auction/AuctionBase.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./ERC721/ERC721.sol";
 
+
+// Base Asset Contract controls all NFT/Asset related Data
 contract AssetBase is AccessControl,ERC721 {
+    // Counters 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -21,10 +24,20 @@ contract AssetBase is AccessControl,ERC721 {
         address owner;
     }
 
-    // Assets stored in this array
+    // Assets stored in this array 
+    // Primary array that contains all assets tokenid wise
     Asset[] internal Assets;
 
     // All Assets mapped to there original owner
+    // Address -> balance -> tokenId
+    // Example
+    // address => address of Owner (Hulk)
+    // balance of Hulk => 4
+    // owns Token 2 8 14 52
+    //    Hulk--> 1 -> 2
+    //      |---> 2 -> 8
+    //      |---> 3 -> 14
+    //      |---> 4 -> 52
     mapping (address=>mapping(uint256=>uint256)) internal ownsToken;
 
     // Events
@@ -35,8 +48,6 @@ contract AssetBase is AccessControl,ERC721 {
     // Array to null.
     constructor()ERC721("ASSET","AST"){
         Assets.push(Asset(0,address(this)));
-        // auction = new AuctionBase(address(this));
-        // Will create a function and it's address explicitly
     }
 
     // Mints Asset and fires Minted Event.
@@ -45,9 +56,10 @@ contract AssetBase is AccessControl,ERC721 {
         whenNotPaused
         returns(uint256)
     {
+        // msg sender will be the owner
         address owner = msg.sender;
 
-        // Increments token ID
+        // Increments token ID 
         _tokenIds.increment();
 
         // New TokenID
@@ -88,16 +100,16 @@ contract AssetBase is AccessControl,ERC721 {
         // Caller should own the token
         require(owner == ownerOf(tokenId),"NFT query for not owned NFT");
         
-        // Initial Balance for swaping final token with burned token
+        // Initial Balance for swaping final token with burned token in mapping 
         uint256 initialBalance = balanceOf(owner);
         
         // Burns token
         _burn(tokenId);
         
-        // finalBalance for chaeking base condition
+        // finalBalance for checking base condition
         uint256 finalBalance = balanceOf(owner);
         
-        // delete asset from Assets
+        // delete Asset from Assets
         delete Assets[tokenId];
         
         // Base condition
@@ -133,7 +145,8 @@ contract AssetBase is AccessControl,ERC721 {
         external
     {
         require(msg.sender == ownerOf(_tokenId));
-        // Approves this contract to manage NFT
+        
+        // Approves auction contract to manage NFT
         approve(address(auction),_tokenId);
     }
 
