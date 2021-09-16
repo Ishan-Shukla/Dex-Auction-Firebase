@@ -1,6 +1,11 @@
 import React from "react";
+import { useParams, useHistory } from "react-router";
 
 function ViewCard(props) {
+  // let history = useHistory();
+  // const change = () => {
+    // history.push(`/MyAssets/Asset/${props.tokenId}`)
+  // }
   return (
     <div className="flex flex-col overflow-hidden shadow-lg rounded-lg h-96 h- w-72 mt-8 ml-auto mr-auto cursor-pointer">
       <div className="border h-4/5">

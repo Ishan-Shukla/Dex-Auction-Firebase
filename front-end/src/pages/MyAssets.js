@@ -1,41 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Web3Modal, { Provider } from "web3modal";
 import { ethers } from "ethers";
 import TopBar from "../Components/Header/TopBar";
 import Navbar from "../Components/NavBar/NavBar";
 import Address from "../Components/Header/Address";
-
+import { MetamaskProvider } from "../App";
+import { UserAccount } from "../App";
+import Mint from "./MyAssets/Mint";
 import ASSET from "../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import AUCTION from "../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import ViewCard from "../Components/Card/ViewCard";
+import { New } from "../Components/MyAssets/New";
+import { Asset } from "./MyAssets/Asset";
+import View from "./MyAssets/View";
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 const auction = process.env.REACT_APP_AUCTION_BASE;
 
-function MyAssets() {
-  const [connected, setStatus] = useState(false);
-  const [Account, setAccount] = useState();
+export const NFT = React.createContext();
+
+const MyAssets = () => {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
-  let provider;
-  const web3modal = new Web3Modal({});
-  let web3;
+  const provider = useContext(MetamaskProvider);
+  const Account = useContext(UserAccount);
 
   useEffect(() => {
-    loadNFTs();
-  }, []);
+    if (loadingState === "not-loaded") {
+      loadNFTs();
+    }
+  }, [loadingState]);
 
   async function loadNFTs() {
-    if (provider === undefined) {
-      web3 = await web3modal.connect();
-      provider = new ethers.providers.Web3Provider(web3);
-      let selectedAccount = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      setAccount(selectedAccount);
-    }
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
     const data = await contract.getOwnerAssets();
@@ -56,72 +55,68 @@ function MyAssets() {
       setNfts(assets);
     }
     setLoadingState("loaded");
-    setStatus(true);
-
-    // Subscribe to accounts change
-    web3.on("accountsChanged", (accounts) => {
-      setAccount(accounts[0]);
-      console.log(Account);
-    });
-
-    // Subscribe to chainId change
-    web3.on("chainChanged", (chainId) => {
-      console.log(parseInt(chainId));
-      alert("Chain Id Chainged");
-    });
-
-    // Subscribe to disconect
-    web3.on("disconnect", (err) => {
-      console.log(err);
-      setStatus(false);
-    });
   }
+
+  const setStatus = () => {
+    setLoadingState("not-loaded");
+  };
+
   if (loadingState === "loaded" && !nfts.length)
     return (
       <>
-        <TopBar />
-        <Navbar />
-        <div className=" border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
-          <Address address={Account} />
-          <div>
-            <div className="flex flex-col pt-28 justify-center">
-              <p className="text-5xl font-semibold pb-12 self-center">
-                Mint Your First Asset
-              </p>
-              <div className="self-center">
-                <Link to="/MyAssets/Mint">
-                  <button className="px-6 py-2 mr-4 transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
-                    Mint
-                  </button>
-                </Link>
-              </div>
-            </div>
+        <Address address={Account} />
+        <Router forceRefresh={true}>
+          <div className="flex flex-col mt-10 my-auto mx-auto items-center">
+            <p className="text-5xl font-semibold pb-12 ">
+              Mint Your First Asset
+            </p>
+            <Mint status={setStatus} />
           </div>
-        </div>
+        </Router>
       </>
     );
   return (
-    
-    <div>
-      <TopBar />
-      <Navbar />
-      <div className="border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
-        <Address address={Account} />
-        <div className="flex justify-center">
-          <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-              {nfts.map((nft) => (
-                <div key={nft.tokenId} className="border shadow rounded-xl overflow-hidden">
-                  <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <Router>
+      {/* <Redirect to="/MyAssets" /> */}
+      <div className="items-center">
+        <Switch>
+          <NFT.Provider value={nfts}>
+            <Route exact path="/MyAssets">
+              <View />
+            </Route>
+            <Route path="/MyAssets/Asset/:id">
+              <Asset status={setStatus} />
+            </Route>
+            <Route path="/MyAssets/Mint">
+              <Mint status={setStatus} />
+            </Route>
+          </NFT.Provider>
+        </Switch>
       </div>
-    </div>
+    </Router>
   );
-}
+};
+
+// return (
+//   <>
+//     <Address address={Account} />
+//     <Redirect to="/MyAssets" />
+//     <Router>
+//       <div>
+//         <Switch>
+//           <NFT.Provider value={nfts}>
+//             <Route exact path="/MyAssets">
+//               <View />
+//             </Route>
+//             <Route path="/Asset/:id">
+//               <Asset />
+//             </Route>
+//           </NFT.Provider>
+//         </Switch>
+//       </div>
+//     </Router>
+//   </>
+// );
 
 export default MyAssets;
 // {
@@ -138,6 +133,8 @@ export default MyAssets;
 //                 </div>
 //               </div> */
 // }
-{/* <Route exact path="/MyAssets/Mint">
-            <Mint />
-          </Route> */}
+// {
+//   /* <Route exact path="/MyAssets/Mint">
+//             <Mint />
+//           </Route> */
+// }
