@@ -1,34 +1,37 @@
-import React, { useState, useEffect, useContext } from "react";
-import Web3Modal from "web3modal";
+import React, { useState, useContext } from "react";
+// import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
-import { UserAccount } from "../../App";
-import TopBar from "../../Components/Header/TopBar";
-import Navbar from "../../Components/NavBar/NavBar";
+// import { UserAccount } from "../../App";
+// import TopBar from "../../Components/Header/TopBar";
+// import Navbar from "../../Components/NavBar/NavBar";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
-import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
-import { useParams, useHistory } from "react-router";
+// import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
+import { useHistory } from "react-router";
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
-const auction = process.env.REACT_APP_AUCTION_BASE;
+// const auction = process.env.REACT_APP_AUCTION_BASE;
 
 const Mint = (props) => {
   // const { id } = useParams();
   let history = useHistory();
+
   const changeStatus = () => {
-    props.status();
+    props.status("not-loaded");
   };
+
   const [assetInput, updateAssetInput] = useState({
     name: "",
     description: "",
   });
+  
   const provider = useContext(MetamaskProvider);
-  const Account = useContext(UserAccount);
+  // const Account = useContext(UserAccount);
 
-  const [nfts, setNfts] = useState([]);
+  // const [nfts, setNfts] = useState([]);
 
   async function MintAsset(url) {
-    console.log(provider);
+    // console.log(provider);
     const signer = provider.getSigner();
 
     /* next, create the item */
@@ -38,9 +41,9 @@ const Mint = (props) => {
     let event = tx.events[0];
     let value = event.args[2];
     let tokenId = value.toNumber();
-    console.log(event);
-    console.log(value);
-    console.log(tokenId);
+    // console.log(event);
+    // console.log(value);
+    // console.log(tokenId);
   }
 
   async function createAsset() {
@@ -52,7 +55,7 @@ const Mint = (props) => {
       name,
       description,
     });
-    console.log(data);
+    // console.log(data);
     await MintAsset("Test");
     await changeStatus();
     await history.push("/MyAssets");

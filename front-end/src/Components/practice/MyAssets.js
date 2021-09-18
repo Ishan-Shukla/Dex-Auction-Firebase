@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import TopBar from "../Components/Header/TopBar";

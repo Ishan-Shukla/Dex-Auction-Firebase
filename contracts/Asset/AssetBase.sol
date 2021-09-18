@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+ // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
 pragma experimental ABIEncoderV2;
 
@@ -26,7 +26,7 @@ contract AssetBase is AccessControl,ERC721 {
 
     // Assets stored in this array 
     // Primary array that contains all assets tokenid wise
-    Asset[] internal Assets;
+    Asset[] public Assets;
 
     // All Assets mapped to there original owner
     // Address -> balance -> tokenId
@@ -38,7 +38,7 @@ contract AssetBase is AccessControl,ERC721 {
     //      |---> 2 -> 8
     //      |---> 3 -> 14
     //      |---> 4 -> 52
-    mapping (address=>mapping(uint256=>uint256)) internal ownsToken;
+    mapping (address=>mapping(uint256=>uint256)) public ownsToken;
 
     // Events
     event Minted(address indexed from,uint256 indexed tokenID);
@@ -48,6 +48,12 @@ contract AssetBase is AccessControl,ERC721 {
     // Array to null.
     constructor()ERC721("ASSET","AST"){
         Assets.push(Asset(0,address(this)));
+    }
+    
+    // To allow actions only when contract is paused
+    modifier onlyAuction {
+        require(msg.sender == address(auction),"Only Auction Contract can access");
+        _;
     }
 
     // Mints Asset and fires Minted Event.
@@ -148,6 +154,47 @@ contract AssetBase is AccessControl,ERC721 {
         
         // Approves auction contract to manage NFT
         approve(address(auction),_tokenId);
+    }
+    
+    // Manage ownsToken mapping
+    function Escrowed(uint256 tokenId , address owner)
+    onlyAuction
+    external
+    {
+        // finalBalance for checking base condition
+        uint256 finalBalance = balanceOf(owner);
+        
+        // Initial Balance for swaping final token with burned token in mapping 
+        uint256 initialBalance = finalBalance + 1 ;
+        
+        // Base condition
+        if(finalBalance == 0){
+            // Deletes token from ownsToken
+            delete ownsToken[owner][1];
+        } else {
+            // Itterate and find token by tokenId
+            for (uint256 i = 1; i <= initialBalance; i++) {
+                // Token Found
+                if(ownsToken[owner][i] == tokenId) {
+                    
+                    // Swap last token with to be deleted token
+                    ownsToken[owner][i] = ownsToken[owner][initialBalance];
+                    
+                    // delete last token
+                    delete ownsToken[owner][initialBalance];
+                    
+                    // Get out of loop
+                    break;
+                }
+            }
+        }
+    }
+    
+    function Transfered(uint256 tokenId , address owner)
+    onlyAuction
+    external
+    {
+        ownsToken[owner][balanceOf(owner)] = tokenId;
     }
 
 }

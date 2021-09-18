@@ -1,9 +1,8 @@
 import React from "react";
-import Connect from "./Connect";
 import Logo from "./Logo";
 
 function TopBar(props) {
-  const account = props.ConnectMe;
+  // const account = props.ConnectMe;
   return (
     <div className="fixed top-0 w-full z-50">
       <div className="bg-blue-200 bg-opacity-20 backdrop-filter shadow-bar backdrop-blur-md backdrop-brightness-95">

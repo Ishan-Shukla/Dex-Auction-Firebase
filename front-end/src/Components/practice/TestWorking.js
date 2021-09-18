@@ -1,13 +1,13 @@
 import React from 'react';
 import { ethers } from 'ethers';
 import Web3Modal from "web3modal";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ASSET from '../../artifacts/contracts/DexAuction.sol/DeXAuction.json';
-import AUCTION from '../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json';
+// import AUCTION from '../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json';
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
-const auction = process.env.REACT_APP_AUCTION_BASE;
+// const auction = process.env.REACT_APP_AUCTION_BASE;
 
 // For infura ipfs
 // const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')

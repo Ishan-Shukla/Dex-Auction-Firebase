@@ -1,12 +1,12 @@
-import React, { useState, useContext } from "react";
-import { MetamaskProvider } from "../App";
+import React from "react";
+// import { MetamaskProvider } from "../App";
 // import { ethers } from 'ethers';
 // import Web3Modal from "web3modal";
 import Content from "../Components/Landing/Content";
 import ViewCard from "../Components/Card/ViewCard";
 
 const Home = () => {
-  const provider = useContext(MetamaskProvider);
+  // const provider = useContext(MetamaskProvider);
 
   return (
     <>

@@ -1,6 +1,5 @@
 import React from "react";
 import { useHistory } from "react-router";
-import leftArrow from "../../img/leftArrow.svg";
 
 export const GoBack = () => {
   const history = useHistory();

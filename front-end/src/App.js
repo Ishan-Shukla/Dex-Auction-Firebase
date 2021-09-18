@@ -8,14 +8,14 @@ import Navbar from "./Components/NavBar/NavBar";
 import Home from "./pages/Home";
 import MarketPlace from "./pages/MarketPlace";
 import MyAssets from "./pages/MyAssets";
-import Mint from "./pages/MyAssets/Mint";
-import { Asset } from "./pages/MyAssets/NFTView";
+// import Mint from "./pages/MyAssets/Mint";
+// import { Asset } from "./pages/MyAssets/NFTView";
 
 export const MetamaskProvider = React.createContext();
 export const UserAccount = React.createContext();
 
 function App() {
-  const [connected, setStatus] = useState(false);
+  // const [connected, setStatus] = useState(false);
   const [Account, setAccount] = useState(0);
   const [provider, setProvider] = useState(0);
   const [loadingState, setLoadingState] = useState("not-loaded");

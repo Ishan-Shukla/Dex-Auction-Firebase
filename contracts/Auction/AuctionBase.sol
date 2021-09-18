@@ -11,6 +11,7 @@ contract AuctionBase is AuctionCore, Pausable {
     // Creaters a reference to the NFT ownership contract(NFC).
     constructor(address assetAuctionAddress){
         asset = ERC721(assetAuctionAddress);
+        assetBase = AssetBase(assetAuctionAddress);
         setOwner(assetAuctionAddress);
     }
 

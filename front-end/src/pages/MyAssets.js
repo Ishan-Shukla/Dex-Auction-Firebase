@@ -7,19 +7,20 @@ import { UserAccount } from "../App";
 import Mint from "./MyAssets/Mint";
 import ASSET from "../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import AUCTION from "../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
-import { Link } from "react-router-dom";
-import { NFTView } from "./MyAssets/NFTView";
-import View, { AssetView } from "./MyAssets/AssetView";
+import { AssetView } from "./MyAssets/AssetView";
 import { MintButton } from "../Components/Buttons/MintButton";
 import { AssetButton } from "../Components/Buttons/AssetButton";
+import { AuctionButton } from "../Components/Buttons/AuctionButton";
+import { AuctionView } from "./MyAssets/AuctionView";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 const auction = process.env.REACT_APP_AUCTION_BASE;
 
-export const NFT = React.createContext();
+export const CHECK = React.createContext();
 
 const MyAssets = () => {
+  
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [load, setLoad] = useState(0);
 
@@ -28,6 +29,7 @@ const MyAssets = () => {
 
   useEffect(() => {
     if (loadingState === "not-loaded") {
+      console.log("Checking Status");
       checkAsset();
     }
   }, [loadingState]);
@@ -40,7 +42,9 @@ const MyAssets = () => {
     const auctionbalance = await auctionContract.auctionBalance(
       Account.toString()
     );
+    console.log("Asset Balance:");
     console.log(assetbalance.toNumber());
+    console.log("Auction Balance:");
     console.log(auctionbalance.toNumber());
 
     // 0 -> no asset and auction owned
@@ -59,6 +63,8 @@ const MyAssets = () => {
         check = 2;
       }
     }
+    console.log("Check:");
+    console.log(check);
     await setLoad(check);
     await setLoadingState("loaded");
   }
@@ -81,17 +87,17 @@ const MyAssets = () => {
               ) : null}
               <MintButton />
               {load === 1 || load === 3 ? <AssetButton /> : null}
-              {load === 2 || load === 3 ? <MintButton /> : null}
+              {load === 2 || load === 3 ? <AuctionButton /> : null}
             </div>
           </Route>
           <Route path="/MyAssets/Mint">
             <Mint status={setStatus} />
           </Route>
-          <Route path="/MyAssets/View">
-            <AssetView />
+          <Route path="/MyAssets/AssetView">
+              <AssetView status={setStatus} />
           </Route>
-          <Route path="/MyAssets/Asset/:id">
-            <NFTView />
+          <Route path="/MyAssets/AuctionView">
+            <AuctionView status={setStatus} />
           </Route>
         </Switch>
       </Router>
