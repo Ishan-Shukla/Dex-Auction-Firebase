@@ -1,32 +1,26 @@
 import React from "react";
-// import { MetamaskProvider } from "../App";
-// import { ethers } from 'ethers';
-// import Web3Modal from "web3modal";
+import { BrowserRouter as Router, Route} from "react-router-dom";
 import Content from "../Components/Landing/Content";
-import ViewCard from "../Components/Card/ViewCard";
+import { NFTsView } from "./HomeView/NFTViewHome";
+import { NFTHome } from "./HomeView/NFTHome";
 
 const Home = () => {
-  // const provider = useContext(MetamaskProvider);
 
   return (
-    <>
-      {/* <TopBar ConnectMe={selectedAccount} /> */}
-      <div className="bg-Subtle-Background border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
-        <Content />
-      </div>
-      <div className="mt-20">
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-        <ViewCard />
-      </div>
-    </>
+    <Router>
+      <Route exact path="/">
+        <div className="bg-Subtle-Background border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
+          <Content />
+        </div>
+        <div className="mt-20">
+          <NFTHome />
+        </div>
+      </Route>
+      <Route path="/NFT/:id">
+        <NFTsView />
+      </Route>
+    </Router>
   );
-}
+};
 
 export default Home;

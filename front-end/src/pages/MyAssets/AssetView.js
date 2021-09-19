@@ -6,7 +6,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { MetamaskProvider } from "../../App";
 import ViewCard from "../../Components/Card/ViewCard";
 import { GoBack } from "../../Components/Buttons/GoBack";
-import { NFTView } from "./NFTView";
+import { NFTView } from "./NFTassetView";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -15,7 +15,6 @@ const asset = process.env.REACT_APP_DEX_AUCTION;
 export const NFT = React.createContext();
 
 export const AssetView = (props) => {
-
   const [NFTs, setNFTs] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
@@ -35,23 +34,39 @@ export const AssetView = (props) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
     const data = await contract.getOwnerAssets();
-    // console.log(data);
+    // console.log(data[0].TokenID.toNumber());
+    const finalData = data
+      .slice()
+      .sort((a, b) =>
+        a.TokenID.toNumber() > b.TokenID.toNumber()
+          ? 1
+          : b.TokenID.toNumber() > a.TokenID.toNumber()
+          ? -1
+          : 0
+      );
+    // a.TokenID.toNumber()
+    // b.TokenID.toNumber()
+    // console.log(finalData);
+    // const test = sortByKey(data)
+    // const test = sortObjectByKeys(data);
+    // console.log(test);
+    // console.log(typeof(data));
     let counter = 0;
     // if (data.length > 0) {
     let assets = await Promise.all(
-      data.map(async (NFT) => {
-        console.log(NFT.TokenID);
+      finalData.map(async (NFT) => {
+        // console.log(NFT.TokenID);
         const tokenURI = await contract.tokenURI(NFT.TokenID);
         let asset = {
-          tokenId: NFT.TokenID.toString(),
-          owner: NFT.owner,
+          tokenId: NFT.TokenID.toNumber(),
+          owner: NFT.owner.toString(),
           tokenURI,
-          index: counter++
+          index: counter++,
         };
         return asset;
       })
     );
-    console.log(assets);
+    // console.log(assets);
     setNFTs(assets);
     // }
     setLoadingState("loaded");
@@ -70,7 +85,10 @@ export const AssetView = (props) => {
                       key={nft.tokenId}
                       className="border shadow rounded-xl overflow-hidden"
                     >
-                      <Link to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`} replace>
+                      <Link
+                        to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}
+                        replace
+                      >
                         <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
                       </Link>
                     </div>

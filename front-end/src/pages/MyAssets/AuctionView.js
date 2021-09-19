@@ -16,7 +16,6 @@ const asset = process.env.REACT_APP_DEX_AUCTION;
 export const NFT = React.createContext();
 
 export const AuctionView = (props) => {
-
   const [NFTs, setNFTs] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
@@ -36,29 +35,37 @@ export const AuctionView = (props) => {
     const signer = await provider.getSigner();
     let contract = new ethers.Contract(auction, AUCTION.abi, signer);
     const data = await contract.assetsOnAuction();
-    console.log(data);
     contract = new ethers.Contract(asset, ASSET.abi, signer);
     let counter = 0;
     let assets = await Promise.all(
-      data.map(async (NFT) => {
-        console.log(NFT.tokenId);
-        const tokenURI = await contract.tokenURI(NFT.tokenId);
-        let asset = {
-          tokenId: NFT.tokenId.toNumber(),
-          seller: NFT.seller.toString(),
-          reservePrice: NFT.startingPrice.toString(),
-          maxBidPrice: NFT.maxBidPrice.toNumber(),
-          maxBidder: NFT.maxBidder.toString(),
-          duration: NFT.duration.toNumber(),
-          startAt: NFT.startAt.toNumber(),
-          status: NFT.auctionStatus.toString(),
-          tokenURI,
-          index: counter++,
-        };
-        return asset;
-      })
+      data
+        .slice()
+        .sort((a, b) =>
+          a.tokenId.toNumber() > b.tokenId.toNumber()
+            ? 1
+            : b.tokenId.toNumber() > a.tokenId.toNumber()
+            ? -1
+            : 0
+        )
+        .map(async (NFT) => {
+          // console.log(NFT.tokenId);
+          const tokenURI = await contract.tokenURI(NFT.tokenId);
+          let asset = {
+            tokenId: NFT.tokenId.toNumber(),
+            seller: NFT.seller.toString(),
+            reservePrice: NFT.startingPrice.toString(),
+            maxBidPrice: NFT.maxBidPrice.toString(),
+            maxBidder: NFT.maxBidder.toString(),
+            duration: NFT.duration.toNumber(),
+            startAt: NFT.startAt.toNumber(),
+            status: NFT.auctionStatus.toString(),
+            tokenURI,
+            index: counter++,
+          };
+          return asset;
+        })
     );
-    console.log(assets);
+    // console.log(assets);
     setNFTs(assets);
     setLoadingState("loaded");
   }
@@ -82,16 +89,16 @@ export const AuctionView = (props) => {
                         replace
                       >
                         <OnAuctionViewCard
-                        //   tokenId={nft.tokenId}
-                        //   seller={nft.seller}
+                          //   tokenId={nft.tokenId}
+                          //   seller={nft.seller}
                           reservePrice={nft.reservePrice}
-                        //   maxBidPrice={nft.maxBidPrice}
-                        //   maxBidder={nft.maxBidder}
-                        //   duration={nft.duration}
-                        //   startAt={nft.startAt}
-                        //   status={nft.status}
-                        //   tokenURI={nft.tokenURI}
-                        //   index={nft.index}
+                          //   maxBidPrice={nft.maxBidPrice}
+                          //   maxBidder={nft.maxBidder}
+                          //   duration={nft.duration}
+                          //   startAt={nft.startAt}
+                          //   status={nft.status}
+                          //   tokenURI={nft.tokenURI}
+                          //   index={nft.index}
                         />
                       </Link>
                     </div>
@@ -102,7 +109,7 @@ export const AuctionView = (props) => {
           </Route>
           <NFT.Provider value={NFTs}>
             <Route path="/MyAssets/onAuction/:id/:index">
-              <NFTauctionView status={changeStatus}/>
+              <NFTauctionView status={changeStatus} />
             </Route>
           </NFT.Provider>
         </Switch>

@@ -6,10 +6,11 @@ import Web3Modal from "web3modal";
 import TopBar from "./Components/Header/TopBar";
 import Navbar from "./Components/NavBar/NavBar";
 import Home from "./pages/Home";
-import MarketPlace from "./pages/MarketPlace";
 import MyAssets from "./pages/MyAssets";
-// import Mint from "./pages/MyAssets/Mint";
-// import { Asset } from "./pages/MyAssets/NFTView";
+import { Test } from "./pages/Test";
+import MarketPlace from "./pages/MarketPlace";
+// import Market from "./pages/Market";
+// import MarketPlace from "./pages/MarketPlace";
 
 export const MetamaskProvider = React.createContext();
 export const UserAccount = React.createContext();
@@ -67,9 +68,11 @@ function App() {
       console.log(err);
     });
   };
+
   if (loadingState !== "loaded") {
     return <h1>Loading</h1>;
   }
+
   return (
     <Router>
       <MetamaskProvider.Provider value={provider}>
@@ -81,14 +84,14 @@ function App() {
               <Route exact path="/">
                 <Home />
               </Route>
+              <Route exact path="/Market">
+                <MarketPlace />
+              </Route>
               <UserAccount.Provider value={Account}>
                 <Route exact path="/MyAssets">
                   <MyAssets />
                 </Route>
               </UserAccount.Provider>
-              <Route exact path="/MarketPlace">
-                <MarketPlace />
-              </Route>
             </Switch>
           </div>
         </div>

@@ -7,8 +7,6 @@ import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBa
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
-// import ViewCard from "../../Components/Card/ViewCard";
-// import { Link } from "react-router-dom";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;

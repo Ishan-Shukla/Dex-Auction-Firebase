@@ -2,12 +2,13 @@ import React, { useState, useContext } from "react";
 // import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
+import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
+import { useHistory } from "react-router";
 // import { UserAccount } from "../../App";
 // import TopBar from "../../Components/Header/TopBar";
 // import Navbar from "../../Components/NavBar/NavBar";
-import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 // import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
-import { useHistory } from "react-router";
+
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 // const auction = process.env.REACT_APP_AUCTION_BASE;

@@ -138,6 +138,14 @@ contract DeXAuction is AssetBase {
         return result;
     }
 
+    function getAsset(uint256 tokenId)
+    external
+    view
+    whenNotPaused
+    returns(Asset memory){
+        return Assets[tokenId];
+    }
+
     function getAllAssets()
         external
         view
