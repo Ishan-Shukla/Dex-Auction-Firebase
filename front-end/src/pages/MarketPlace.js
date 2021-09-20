@@ -1,9 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AUCTION from "../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
 import ASSET from "../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-// import { useParams, useHistory } from "react-router";
-import { MetamaskProvider } from "../App";
 import { ethers } from "ethers";
 import OnAuctionViewCard from "../Components/Card/OnAuctionViewCard";
 import NFTViewMarketPlace from "./Market/NFTViewMarketPlace";
@@ -18,8 +16,6 @@ const MarketPlace = () => {
   const [onAuctions, setAuctions] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
-  const provider = useContext(MetamaskProvider);
-
   useEffect(() => {
     if (loadingState === "not-loaded") {
       loadNFTs();
@@ -31,11 +27,11 @@ const MarketPlace = () => {
   };
 
   async function loadNFTs() {
-    const signer = await provider.getSigner();
-    let contract = new ethers.Contract(auction, AUCTION.abi, signer);
+    const Provider = new ethers.providers.JsonRpcProvider();
+    let contract = new ethers.Contract(auction, AUCTION.abi, Provider);
     const data = await contract.getAllAuctions();
     console.log(data);
-    contract = new ethers.Contract(asset, ASSET.abi, signer);
+    contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const auctions = await Promise.all(
       data
         .filter((nft) => nft.tokenId.toNumber() !== 0)

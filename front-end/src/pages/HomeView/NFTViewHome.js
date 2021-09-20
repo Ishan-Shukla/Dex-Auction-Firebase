@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { useParams, useHistory } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
-import { MetamaskProvider } from "../../App";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -12,8 +10,6 @@ const asset = process.env.REACT_APP_DEX_AUCTION;
 export const NFTsView = () => {
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [NFT, setNFT] = useState();
-
-  const provider = useContext(MetamaskProvider);
 
   const { id } = useParams();
 
@@ -24,8 +20,8 @@ export const NFTsView = () => {
   }, [loadingState]);
 
   async function loadNFTs() {
-    const signer = await provider.getSigner();
-    const contract = new ethers.Contract(asset, ASSET.abi, signer);
+    const Provider = new ethers.providers.JsonRpcProvider();
+    const contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const data = await contract.getAsset(id);
     console.log(data);
     const URI = await contract.tokenURI(id);

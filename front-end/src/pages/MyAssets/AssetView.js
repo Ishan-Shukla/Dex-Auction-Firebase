@@ -10,7 +10,6 @@ import { NFTassetView } from "./NFTassetView";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
-// const auction = process.env.REACT_APP_AUCTION_BASE;
 
 export const NFT = React.createContext();
 
@@ -34,7 +33,6 @@ export const AssetView = (props) => {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
     const data = await contract.getOwnerAssets();
-    // console.log(data[0].TokenID.toNumber());
     const finalData = data
       .slice()
       .sort((a, b) =>
@@ -45,10 +43,8 @@ export const AssetView = (props) => {
           : 0
       );
     let counter = 0;
-    // if (data.length > 0) {
     let assets = await Promise.all(
       finalData.map(async (NFT) => {
-        // console.log(NFT.TokenID);
         const tokenURI = await contract.tokenURI(NFT.TokenID);
         let asset = {
           tokenId: NFT.TokenID.toNumber(),
@@ -59,9 +55,7 @@ export const AssetView = (props) => {
         return asset;
       })
     );
-    // console.log(assets);
     setNFTs(assets);
-    // }
     setLoadingState("loaded");
   }
   if (loadingState === "loaded") {

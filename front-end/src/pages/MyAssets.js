@@ -65,8 +65,8 @@ const MyAssets = () => {
     }
     console.log("Check:");
     console.log(check);
-    await setLoad(check);
-    await setLoadingState("loaded");
+    setLoad(check);
+    setLoadingState("loaded");
   }
 
   const setStatus = () => {
@@ -106,77 +106,3 @@ const MyAssets = () => {
   return <h1>Loading</h1>;
 };
 export default MyAssets;
-
-//   const [nfts, setNfts] = useState([]);
-//   const [loadingState, setLoadingState] = useState("not-loaded");
-
-//   const provider = useContext(MetamaskProvider);
-//   const Account = useContext(UserAccount);
-
-//   useEffect(() => {
-//     if (loadingState === "not-loaded") {
-//       loadNFTs();
-//     }
-//   }, [loadingState]);
-
-//   async function loadNFTs() {
-//     const signer = await provider.getSigner();
-//     const contract = new ethers.Contract(asset, ASSET.abi, signer);
-//     const data = await contract.getOwnerAssets();
-//     console.log(data.length);
-//     if (data.length > 0) {
-//       let assets = await Promise.all(
-//         data.map(async (i) => {
-//           const tokenURI = await contract.tokenURI(i.TokenID);
-//           let asset = {
-//             tokenId: i.TokenID.toString(),
-//             owner: i.owner,
-//             tokenURI,
-//           };
-//           return asset;
-//         })
-//       );
-//       console.log(assets);
-//       setNfts(assets);
-//     }
-//     setLoadingState("loaded");
-//   }
-
-//   const setStatus = () => {
-//     setLoadingState("not-loaded");
-//   };
-
-//   if (loadingState === "loaded" && !nfts.length)
-//     return (
-//       <>
-//         <Address address={Account} />
-//         <Router forceRefresh={true}>
-//           <div className="flex flex-col mt-10 my-auto mx-auto items-center">
-//             <p className="text-5xl font-semibold pb-12 ">
-//               Mint Your First Asset
-//             </p>
-//             <Mint status={setStatus} />
-//           </div>
-//         </Router>
-//       </>
-//     );
-//   return (
-//     <Router>
-//       {/* <Redirect to="/MyAssets" /> */}
-//       <div className="items-center">
-//         <Switch>
-//           <NFT.Provider value={nfts}>
-//             <Route exact path="/MyAssets">
-//               <View />
-//             </Route>
-//             <Route path="/MyAssets/Asset/:id">
-//               <Asset status={setStatus} />
-//             </Route>
-//             <Route path="/MyAssets/Mint">
-//               <Mint status={setStatus} />
-//             </Route>
-//           </NFT.Provider>
-//         </Switch>
-//       </div>
-//     </Router>
-//   );

@@ -1,16 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useParams, useHistory } from "react-router";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { NFT } from "./AuctionView";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
-import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 
 require("dotenv");
-const asset = process.env.REACT_APP_DEX_AUCTION;
 const auction = process.env.REACT_APP_AUCTION_BASE;
 
 export const NFTauctionView = (props) => {

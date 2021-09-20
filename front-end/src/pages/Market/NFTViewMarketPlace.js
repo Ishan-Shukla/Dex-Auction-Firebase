@@ -5,7 +5,6 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import { ethers } from "ethers";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useParams, useHistory } from "react-router";
 
 require("dotenv");
@@ -37,11 +36,10 @@ export const NFTViewMarketPlace = (props) => {
   };
 
   async function loadNFTs() {
-    const signer = await provider.getSigner();
-    let contract = new ethers.Contract(auction, AUCTION.abi, signer);
+    const Provider = new ethers.providers.JsonRpcProvider();
+    let contract = new ethers.Contract(auction, AUCTION.abi, Provider);
     const data = await contract.getAuction(id);
-    // console.log(data);
-    contract = new ethers.Contract(asset, ASSET.abi, signer);
+    contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const URI = await contract.tokenURI(id);
     const auc = {
       tokenId: data.tokenId.toNumber(),
@@ -54,17 +52,11 @@ export const NFTViewMarketPlace = (props) => {
       status: data.auctionStatus.toString(),
       tokenURI: URI,
     };
-    // console.log(auc.seller);
-    // console.log(Account.toString());
     const address = ethers.utils.getAddress(Account.toString());
-    // console.log(address);
-    // console.log(auc.seller.localeCompare(address));
     if (auc.seller.localeCompare(address) === 0) {
       setLock(true);
     }
-    // console.log(auc);
     const blockno = await provider.getBlockNumber();
-    // console.log(blockno);
     const block = await provider.getBlock(blockno);
     console.log(block.timestamp);
     if (auc.startAt !== 0) {
@@ -73,7 +65,6 @@ export const NFTViewMarketPlace = (props) => {
         setLock(true);
       }
     }
-    // const time = block.timeStamp;
     setAuction(auc);
     setLoadingState("loaded");
   }
@@ -90,9 +81,6 @@ export const NFTViewMarketPlace = (props) => {
       value: amount,
     });
     await transaction.wait();
-    // var d = new Date();
-    // var n = d.getTime();
-    // console.log(n);
     history.push("/Market");
     changeState();
   }
@@ -108,7 +96,7 @@ export const NFTViewMarketPlace = (props) => {
 
   if (loadingState === "loaded")
     return (
-      <Router>
+      <>
         <GoBack change={changeState} url="/Market" />
         <div className="flex p-40 max-h-screen justify-center">
           <div className="w-full border h-max p-4">
@@ -139,7 +127,7 @@ export const NFTViewMarketPlace = (props) => {
           )}
           {claim ? <button onClick={claimNFT}>Claim NFT</button> : null}
         </div>
-      </Router>
+      </>
     );
   return <h1>Loading</h1>;
 };

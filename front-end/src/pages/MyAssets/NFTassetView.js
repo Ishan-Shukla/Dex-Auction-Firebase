@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useParams, useHistory } from "react-router";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { NFT } from "./AssetView";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
@@ -8,8 +8,6 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
-// import ViewCard from "../../Components/Card/ViewCard";
-// import { Link } from "react-router-dom";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -30,22 +28,17 @@ export const NFTassetView = (props) => {
     duration: "",
   });
 
-  // useEffect(() => props.viewState(), []);
-
   const changeStatus = () => {
     props.status();
   };
 
   async function BurnAsset() {
-    // console.log(provider);
-    // console.log(nfts);
     const signer = provider.getSigner();
 
     /* next, create the item */
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
     const transaction = await contract.Burn(id);
     const tx = await transaction.wait();
-    // console.log(tx);
     const balance = await contract.balanceOf(Account.toString());
     if (balance.toNumber() === 0) {
       history.push("/MyAssets");

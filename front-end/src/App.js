@@ -7,27 +7,27 @@ import TopBar from "./Components/Header/TopBar";
 import Navbar from "./Components/NavBar/NavBar";
 import Home from "./pages/Home";
 import MyAssets from "./pages/MyAssets";
-import { Test } from "./pages/Test";
 import MarketPlace from "./pages/MarketPlace";
-// import Market from "./pages/Market";
-// import MarketPlace from "./pages/MarketPlace";
+import { useHistory } from "react-router";
+
 
 export const MetamaskProvider = React.createContext();
 export const UserAccount = React.createContext();
 
 function App() {
-  // const [connected, setStatus] = useState(false);
   const [Account, setAccount] = useState(0);
   const [provider, setProvider] = useState(0);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [chainLock, setchainLock] = useState(false);
+  const history = useHistory();
 
-  const web3modal = new Web3Modal({});
+  const web3modal = new Web3Modal();
   let web3;
   let selectedAccount = 0;
 
   useEffect(() => {
     Connect();
-  }, []);
+  }, [loadingState]);
 
   const Connect = async () => {
     web3 = await web3modal.connect();
@@ -37,30 +37,27 @@ function App() {
     });
     setAccount(() => selectedAccount);
     setLoadingState("loaded");
-    // console.log(window.ethereum);
-    // console.log(typeof(window.ethereum));
-    // console.log(parseInt(window.ethereum.chainId));
-    // console.log(window.ethereum.isMetaMask);
-    // console.log(web3modal);
-    // console.log(web3);
-    // console.log(provider);
-    // console.log(loadingState);
-    // console.log(await (await provider.getNetwork()).chainId);
-    // console.log(selectedAccount);
-    // console.log(Account);
+    console.log("Loaded");
 
     // Subscribe to accounts change
     web3.on("accountsChanged", (accounts) => {
-      // console.log(accounts);
-      selectedAccount = accounts[0];
-      setAccount(selectedAccount);
-      console.log(selectedAccount);
-      // selectedAccount = accounts
+      console.log(accounts);
+      history.replace("/");
+      setLoadingState("not-loaded");
     });
 
     // Subscribe to chainId change
     web3.on("chainChanged", (chainId) => {
       console.log(parseInt(chainId));
+      if (parseInt(chainId) !== 1337) {
+        if (!chainLock) {
+          setchainLock(true);
+        }
+      } else {
+        setchainLock(false);
+        history.replace("/");
+        setLoadingState("not-loaded");
+      }
     });
 
     // Subscribe to disconect
@@ -72,7 +69,9 @@ function App() {
   if (loadingState !== "loaded") {
     return <h1>Loading</h1>;
   }
-
+  if (chainLock) {
+    return <h1>Connected to wrong Chain</h1>;
+  }
   return (
     <Router>
       <MetamaskProvider.Provider value={provider}>

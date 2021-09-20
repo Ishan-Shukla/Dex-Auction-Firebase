@@ -1,21 +1,14 @@
 import React, { useState, useContext } from "react";
-// import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { useHistory } from "react-router";
 import { GoBack } from "../../Components/Buttons/GoBack";
-// import { UserAccount } from "../../App";
-// import TopBar from "../../Components/Header/TopBar";
-// import Navbar from "../../Components/NavBar/NavBar";
-// import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBase.json";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
-// const auction = process.env.REACT_APP_AUCTION_BASE;
 
 const Mint = (props) => {
-  // const { id } = useParams();
   let history = useHistory();
 
   const changeStatus = () => {
@@ -28,12 +21,8 @@ const Mint = (props) => {
   });
 
   const provider = useContext(MetamaskProvider);
-  // const Account = useContext(UserAccount);
-
-  // const [nfts, setNfts] = useState([]);
 
   async function MintAsset(url) {
-    // console.log(provider);
     const signer = provider.getSigner();
 
     /* next, create the item */
@@ -43,9 +32,6 @@ const Mint = (props) => {
     let event = tx.events[0];
     let value = event.args[2];
     let tokenId = value.toNumber();
-    // console.log(event);
-    // console.log(value);
-    // console.log(tokenId);
   }
 
   async function createAsset() {
@@ -57,10 +43,9 @@ const Mint = (props) => {
       name,
       description,
     });
-    // console.log(data);
     await MintAsset("Test");
-    await changeStatus();
-    await history.push("/MyAssets");
+    changeStatus();
+    history.push("/MyAssets");
   }
 
   return (
