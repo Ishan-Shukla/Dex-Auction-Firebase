@@ -84,10 +84,10 @@ function App() {
               <Route exact path="/">
                 <Home />
               </Route>
-              <Route exact path="/Market">
-                <MarketPlace />
-              </Route>
               <UserAccount.Provider value={Account}>
+                <Route exact path="/Market">
+                  <MarketPlace />
+                </Route>
                 <Route exact path="/MyAssets">
                   <MyAssets />
                 </Route>

@@ -86,39 +86,3 @@ export const NFTHome = (props) => {
   }
   return <h1>Loading</h1>;
 };
-
-//   if (loadingState === "loaded"  && !NFTs.length) {
-//     return (
-//       <Router>
-//         <Switch>
-//           <Route exact path="/MyAssets/AssetView">
-// <div className="flex pt-32 justify-center">
-//   <div className="p-4">
-//     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-//       {NFTs.map((nft) => (
-//         <div
-//           key={nft.tokenId}
-//           className="border shadow rounded-xl overflow-hidden"
-//         >
-//           <Link
-//             to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}
-//             replace
-//           >
-//             <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
-//           </Link>
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// </div>
-//           </Route>
-//           <NFT.Provider value={NFTs}>
-//             <Route path="/MyAssets/Asset/:id/:index">
-//             </Route>
-//           </NFT.Provider>
-//         </Switch>
-//       </Router>
-//     );
-//   }
-//   return <h1>Loading</h1>;
-// };

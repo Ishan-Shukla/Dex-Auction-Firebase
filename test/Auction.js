@@ -137,8 +137,8 @@ describe("DeX-Auction test", function () {
         )
           .to.emit(AuctionContract, "AuctionCreated")
           .withArgs(1, ethers.utils.parseEther("0.5"), 7200);
-        const count= await AuctionContract.connect(seller).auctionBalance();
-        console.log(count.toNumber());
+        // const count= await AuctionContract.connect(seller).auctionBalance(seller.address);
+        // console.log(count.toNumber());
       });
       it("Only seller should be able to create Auction", async function () {
         await AssetContract.connect(seller).Mint("IronMan");

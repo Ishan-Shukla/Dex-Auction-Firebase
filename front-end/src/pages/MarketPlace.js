@@ -26,6 +26,10 @@ const MarketPlace = () => {
     }
   }, [loadingState]);
 
+  const setStatus = () => {
+    setLoadingState("not-loaded");
+  };
+
   async function loadNFTs() {
     const signer = await provider.getSigner();
     let contract = new ethers.Contract(auction, AUCTION.abi, signer);
@@ -49,7 +53,7 @@ const MarketPlace = () => {
             tokenId: NFT.tokenId.toNumber(),
             seller: NFT.seller.toString(),
             reservePrice: NFT.startingPrice.toString(),
-            maxBidPrice: NFT.maxBidPrice.toNumber(),
+            maxBidPrice: NFT.maxBidPrice.toString(),
             maxBidder: NFT.maxBidder.toString(),
             duration: NFT.duration.toNumber(),
             startAt: NFT.startAt.toNumber(),
@@ -75,7 +79,7 @@ const MarketPlace = () => {
                     key={nft.tokenId}
                     className="border shadow rounded-xl overflow-hidden"
                   >
-                    <Link to={`/Market/Auction/${nft.tokenId}`} replace>
+                    <Link to={`/Market/Auction/${nft.tokenId}`}>
                       <OnAuctionViewCard
                         // tokenId={nft.tokenId}
                         // seller={nft.seller}
@@ -96,7 +100,7 @@ const MarketPlace = () => {
           </div>
         </Route>
         <Route path="/Market/Auction/:id">
-          <NFTViewMarketPlace />
+          <NFTViewMarketPlace status={setStatus} />
         </Route>
       </Router>
     );

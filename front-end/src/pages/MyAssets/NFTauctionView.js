@@ -7,6 +7,7 @@ import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBa
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
+import { UserAccount } from "../../App";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -16,24 +17,33 @@ export const NFTauctionView = (props) => {
   const history = useHistory();
   const nfts = useContext(NFT);
   const provider = useContext(MetamaskProvider);
+  const Account = useContext(UserAccount);
   const { id, index } = useParams();
 
   const changeStatus = () => {
     props.status("not-loaded");
   };
 
-  async function cancelAuction(){
-      const signer = provider.getSigner();
-      let contract = new ethers.Contract(auction, AUCTION.abi, signer);
-      let transaction = await contract.CancelAuction(nfts[index].tokenId);
-      let tx = await transaction.wait();
-      await changeStatus();
-      await history.push("/MyAssets");
+  async function cancelAuction() {
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(auction, AUCTION.abi, signer);
+    let transaction = await contract.CancelAuction(nfts[index].tokenId);
+    let tx = await transaction.wait();
+    const balance = await contract.auctionBalance(Account.toString());
+    console.log(balance.toNumber());
+
+    if (balance.toNumber() === 0) {
+      history.push("/MyAssets");
+      props.viewState();
+    } else {
+      history.push("/MyAssets/AuctionView");
+      changeStatus();
+    }
   }
 
   return (
     <Router>
-      <GoBack />
+      <GoBack url="/MyAssets/AuctionView" change={changeStatus} />
       <div className="flex p-40 max-h-screen justify-center">
         <div className="w-full border h-max p-4">
           <p>Pic Here</p>
@@ -50,7 +60,10 @@ export const NFTauctionView = (props) => {
           <div>tokenURI- {nfts[index].tokenURI}</div>
         </div>
         <div>
-          <button onClick={cancelAuction} className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
+          <button
+            onClick={cancelAuction}
+            className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+          >
             Cancel Auction
           </button>
         </div>
@@ -58,116 +71,3 @@ export const NFTauctionView = (props) => {
     </Router>
   );
 };
-
-// export const NFTView = (props) => {
-
-//   const [auctionInput, updateAuctionInput] = useState({
-//     price: "",
-//     duration: "",
-//   });
-
-//   async function BurnAsset() {
-//     // console.log(provider);
-//     // console.log(nfts);
-//     const signer = provider.getSigner();
-
-//     /* next, create the item */
-//     let contract = new ethers.Contract(asset, ASSET.abi, signer);
-//     let transaction = await contract.Burn(id);
-//     let tx = await transaction.wait();
-//     // console.log(tx);
-//     await changeStatus();
-//     await history.push("/MyAssets");
-//   }
-
-//   async function approveAsset(tokenId) {
-//     const signer = provider.getSigner();
-
-//     let contract = new ethers.Contract(asset, ASSET.abi, signer);
-//     let transaction = await contract.Approve(tokenId);
-//     let tx = await transaction.wait();
-//     // console.log(tx);
-//   }
-
-//   async function createAuction(tokenId, price, duration) {
-//     const signer = provider.getSigner();
-//     // console.log(parseInt(duration));
-//     let contract = new ethers.Contract(auction, AUCTION.abi, signer);
-//     let transaction = await contract.CreateAuction(
-//       tokenId,
-//       ethers.utils.parseEther(price),
-//       parseInt(duration)
-//     );
-//     let tx = await transaction.wait();
-//   }
-
-//   async function approveAndCreate() {
-//     const { price, duration } = auctionInput;
-//     if (!price || !duration) {
-//       return;
-//     }
-
-//     await approveAsset(nfts[index].tokenId);
-//     await createAuction(nfts[index].tokenId, price, duration);
-//     await changeStatus();
-//     await history.push("/MyAssets");
-//   }
-
-// return (
-//   <Router>
-//     <GoBack />
-//     <Route exact path={`/MyAssets/Asset/${id}/${index}`}>
-//       <div className="flex p-40 max-h-screen justify-center">
-//         <div className="w-full border h-max p-4">
-//           <p>Pic Here</p>
-//         </div>
-//         <div className="p-4 w-full flex-grow border">
-//           <div>Asset Id- {nfts[index].tokenId}</div>
-//           <div>
-//             <button
-//               onClick={BurnAsset}
-//               className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
-//             >
-//               Burn Asset
-//             </button>
-//             <Link to={`/MyAssets/Asset/Create/${id}/${index}`} replace>
-//               <button className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
-//                 Create Auction
-//               </button>
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </Route>
-//     <Route path="/MyAssets/Asset/Create/:id/:index">
-//       <div className="min-w-full">
-//         <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
-//           <input
-//             placeholder="Auction Price"
-//             className="mt-8 border rounded p-4"
-//             onChange={(e) =>
-//               updateAuctionInput({ ...auctionInput, price: e.target.value })
-//             }
-//           />
-//           <textarea
-//             placeholder="Auction Duration"
-//             className="mt-2 border rounded p-4 resize-none h-52 overflow-y-auto"
-//             onChange={(e) =>
-//               updateAuctionInput({
-//                 ...auctionInput,
-//                 duration: e.target.value,
-//               })
-//             }
-//           />
-//           <button
-//             onClick={approveAndCreate}
-//             className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
-//           >
-//             Create Auction
-//           </button>
-//         </div>
-//       </div>
-//     </Route>
-//   </Router>
-// );
-// };

@@ -28,7 +28,7 @@ export const AuctionView = (props) => {
   }, [loadingState]);
 
   const changeStatus = () => {
-    props.status("not-loaded");
+    props.status();
   };
 
   async function loadNFTs() {
@@ -76,7 +76,7 @@ export const AuctionView = (props) => {
         <Switch>
           <Route exact path="/MyAssets/AuctionView">
             <div className="flex pt-32 justify-center">
-              <GoBack />
+              <GoBack url="/MyAssets" change={changeStatus} />
               <div className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
                   {NFTs.map((nft) => (
@@ -109,7 +109,7 @@ export const AuctionView = (props) => {
           </Route>
           <NFT.Provider value={NFTs}>
             <Route path="/MyAssets/onAuction/:id/:index">
-              <NFTauctionView status={changeStatus} />
+              <NFTauctionView status={() => setLoadingState("not-loaded")} viewState={changeStatus} />
             </Route>
           </NFT.Provider>
         </Switch>

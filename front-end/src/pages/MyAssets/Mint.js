@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { useHistory } from "react-router";
+import { GoBack } from "../../Components/Buttons/GoBack";
 // import { UserAccount } from "../../App";
 // import TopBar from "../../Components/Header/TopBar";
 // import Navbar from "../../Components/NavBar/NavBar";
@@ -18,14 +19,14 @@ const Mint = (props) => {
   let history = useHistory();
 
   const changeStatus = () => {
-    props.status("not-loaded");
+    props.status();
   };
 
   const [assetInput, updateAssetInput] = useState({
     name: "",
     description: "",
   });
-  
+
   const provider = useContext(MetamaskProvider);
   // const Account = useContext(UserAccount);
 
@@ -64,6 +65,7 @@ const Mint = (props) => {
 
   return (
     <div className="min-w-full">
+      <GoBack url="/MyAssets" change={changeStatus}/>
       <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
         <input
           placeholder="Asset Name"

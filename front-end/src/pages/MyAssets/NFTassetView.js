@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { NFT } from "./AssetView";
@@ -7,6 +7,7 @@ import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBa
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
+import { UserAccount } from "../../App";
 // import ViewCard from "../../Components/Card/ViewCard";
 // import { Link } from "react-router-dom";
 
@@ -14,7 +15,7 @@ require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 const auction = process.env.REACT_APP_AUCTION_BASE;
 
-export const NFTView = (props) => {
+export const NFTassetView = (props) => {
   const history = useHistory();
 
   const nfts = useContext(NFT);
@@ -22,14 +23,17 @@ export const NFTView = (props) => {
   const { id, index } = useParams();
 
   const provider = useContext(MetamaskProvider);
+  const Account = useContext(UserAccount);
 
   const [auctionInput, updateAuctionInput] = useState({
     price: "",
     duration: "",
   });
 
+  // useEffect(() => props.viewState(), []);
+
   const changeStatus = () => {
-    props.status("not-loaded");
+    props.status();
   };
 
   async function BurnAsset() {
@@ -38,12 +42,18 @@ export const NFTView = (props) => {
     const signer = provider.getSigner();
 
     /* next, create the item */
-    let contract = new ethers.Contract(asset, ASSET.abi, signer);
-    let transaction = await contract.Burn(id);
-    let tx = await transaction.wait();
+    const contract = new ethers.Contract(asset, ASSET.abi, signer);
+    const transaction = await contract.Burn(id);
+    const tx = await transaction.wait();
     // console.log(tx);
-    await changeStatus();
-    await history.push("/MyAssets");
+    const balance = await contract.balanceOf(Account.toString());
+    if (balance.toNumber() === 0) {
+      history.push("/MyAssets");
+      changeStatus();
+    } else {
+      history.push("/MyAssets/AssetView");
+      props.viewState();
+    }
   }
 
   async function approveAsset(tokenId) {
@@ -52,7 +62,6 @@ export const NFTView = (props) => {
     let contract = new ethers.Contract(asset, ASSET.abi, signer);
     let transaction = await contract.Approve(tokenId);
     let tx = await transaction.wait();
-    // console.log(tx);
   }
 
   async function createAuction(tokenId, price, duration) {
@@ -75,13 +84,21 @@ export const NFTView = (props) => {
 
     await approveAsset(nfts[index].tokenId);
     await createAuction(nfts[index].tokenId, price, duration);
-    await changeStatus();
-    await history.push("/MyAssets");
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(asset, ASSET.abi, signer);
+    const balance = await contract.balanceOf(Account.toString());
+    if (balance.toNumber() === 0) {
+      history.push("/MyAssets");
+      changeStatus();
+    } else {
+      history.push("/MyAssets/AssetView");
+      props.viewState();
+    }
   }
 
   return (
     <Router>
-      <GoBack />
+      <GoBack change={() => props.viewState()} url={"/MyAssets/AssetView"} />
       <Route exact path={`/MyAssets/Asset/${id}/${index}`}>
         <div className="flex p-40 max-h-screen justify-center">
           <div className="w-full border h-max p-4">
@@ -96,7 +113,7 @@ export const NFTView = (props) => {
               >
                 Burn Asset
               </button>
-              <Link to={`/MyAssets/Asset/Create/${id}/${index}`} replace>
+              <Link to={`/MyAssets/Asset/Create/${id}/${index}`}>
                 <button className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
                   Create Auction
                 </button>
@@ -125,7 +142,10 @@ export const NFTView = (props) => {
                 })
               }
             />
-            <button onClick={approveAndCreate} className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
+            <button
+              onClick={approveAndCreate}
+              className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+            >
               Create Auction
             </button>
           </div>

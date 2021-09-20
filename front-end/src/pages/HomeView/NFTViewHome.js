@@ -42,7 +42,7 @@ export const NFTsView = () => {
   if (loadingState === "loaded")
     return (
       <div>
-        <GoBack />
+        <GoBack url="/"/>
         <div className="flex p-40 max-h-screen justify-center">
           <div className="w-full border h-max p-4">
             <p>Pic Here</p>

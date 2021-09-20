@@ -6,7 +6,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { MetamaskProvider } from "../../App";
 import ViewCard from "../../Components/Card/ViewCard";
 import { GoBack } from "../../Components/Buttons/GoBack";
-import { NFTView } from "./NFTassetView";
+import { NFTassetView } from "./NFTassetView";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -44,13 +44,6 @@ export const AssetView = (props) => {
           ? -1
           : 0
       );
-    // a.TokenID.toNumber()
-    // b.TokenID.toNumber()
-    // console.log(finalData);
-    // const test = sortByKey(data)
-    // const test = sortObjectByKeys(data);
-    // console.log(test);
-    // console.log(typeof(data));
     let counter = 0;
     // if (data.length > 0) {
     let assets = await Promise.all(
@@ -77,7 +70,7 @@ export const AssetView = (props) => {
         <Switch>
           <Route exact path="/MyAssets/AssetView">
             <div className="flex pt-32 justify-center">
-              <GoBack />
+              <GoBack change={changeStatus} url="/MyAssets"/>
               <div className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
                   {NFTs.map((nft) => (
@@ -87,7 +80,7 @@ export const AssetView = (props) => {
                     >
                       <Link
                         to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}
-                        replace
+                        
                       >
                         <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
                       </Link>
@@ -99,7 +92,7 @@ export const AssetView = (props) => {
           </Route>
           <NFT.Provider value={NFTs}>
             <Route path="/MyAssets/Asset/:id/:index">
-              <NFTView status={changeStatus} />
+              <NFTassetView status={changeStatus} viewState={()=>setLoadingState("not-loaded")} />
             </Route>
           </NFT.Provider>
         </Switch>
@@ -108,42 +101,3 @@ export const AssetView = (props) => {
   }
   return <h1>Loading</h1>;
 };
-
-// import React, { useContext } from "react";
-// import ViewCard from "../../Components/Card/ViewCard";
-// import { Link } from "react-router-dom";
-// import { NFT } from "../MyAssets";
-// import { UserAccount } from "../../App";
-// import Address from "../../Components/Header/Address";
-// import { MintButton } from "../../Components/Buttons/MintButton";
-
-// function View() {
-//   const nfts = useContext(NFT);
-//   const Account = useContext(UserAccount);
-
-//   //   console.log(nfts);
-//   return (
-//     <>
-//       <Address address={Account} />
-//       <MintButton/>
-// <div className="flex justify-center">
-//   <div className="p-4">
-//     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-//       {nfts.map((nft) => (
-//         <div
-//           key={nft.tokenId}
-//           className="border shadow rounded-xl overflow-hidden"
-//         >
-//           <Link to={`/MyAssets/Asset/${nft.tokenId}`}>
-//             <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
-//           </Link>
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// </div>
-//     </>
-//   );
-// }
-
-// export default View;
