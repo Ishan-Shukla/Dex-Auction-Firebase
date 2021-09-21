@@ -46,13 +46,13 @@ export const NFTHome = (props) => {
   }
   if (loadingState === "loaded" && NFTs.length) {
     return (
-            <div className="flex justify-center">
+            <div className="flex mt-20 mb-20 justify-center">
               <div className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                   {NFTs.map((nft) => (
                     <div
                       key={nft.tokenId}
-                      className="border shadow rounded-xl overflow-hidden"
+              
                     >
                       <Link to={`/NFT/${nft.tokenId}`}>
                         <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
@@ -64,5 +64,7 @@ export const NFTHome = (props) => {
             </div>
     );
   }
-  return <h1>Loading</h1>;
+  return (
+    <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">No NFT to Display</div>
+  );
 };

@@ -8,6 +8,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
+import placeHolder from "../../img/PlaceHolder.svg";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -93,24 +94,28 @@ export const NFTassetView = (props) => {
     <Router>
       <GoBack change={() => props.viewState()} url={"/MyAssets/AssetView"} />
       <Route exact path={`/MyAssets/Asset/${id}/${index}`}>
-        <div className="flex p-40 max-h-screen justify-center">
-          <div className="w-full border h-max p-4">
-            <p>Pic Here</p>
+        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+          <div className="w-full flex justify-center border h-max p-4">
+            <img src={placeHolder} alt="PlaceHolder"></img>
           </div>
-          <div className="p-4 w-full flex-grow border">
-            <div>Asset Id- {nfts[index].tokenId}</div>
-            <div>
-              <button
-                onClick={BurnAsset}
-                className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
-              >
-                Burn Asset
-              </button>
-              <Link to={`/MyAssets/Asset/Create/${id}/${index}`}>
-                <button className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
-                  Create Auction
+          <div className="p-4 w-full border">
+            <div className="flex w-full h-full flex-col border items-center ">
+              <div className="pt-10 pb-10 text-2xl">Asset Name</div>
+              <div className="self-start pl-5 mb-4 border">Asset Id- {nfts[index].tokenId}</div>
+              <div className="self-start pl-5 w-full h-2/5 border">Asset description</div>
+              <div className="flex justify-evenly w-full mt-14 pl-8 pr-8 border">
+                <button
+                  onClick={BurnAsset}
+                  className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+                >
+                  Burn Asset
                 </button>
-              </Link>
+                <Link to={`/MyAssets/Asset/Create/${id}/${index}`}>
+                  <button className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none">
+                    Create Auction
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

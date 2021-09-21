@@ -76,27 +76,26 @@ export const AuctionView = (props) => {
             <div className="flex pt-32 justify-center">
               <GoBack url="/MyAssets" change={changeStatus} />
               <div className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                   {NFTs.map((nft) => (
                     <div
                       key={nft.tokenId}
-                      className="border shadow rounded-xl overflow-hidden"
                     >
                       <Link
                         to={`/MyAssets/onAuction/${nft.tokenId}/${nft.index}`}
                         replace
                       >
                         <OnAuctionViewCard
-                          //   tokenId={nft.tokenId}
-                          //   seller={nft.seller}
+                          tokenId={nft.tokenId}
+                          seller={nft.seller}
                           reservePrice={nft.reservePrice}
-                          //   maxBidPrice={nft.maxBidPrice}
-                          //   maxBidder={nft.maxBidder}
-                          //   duration={nft.duration}
-                          //   startAt={nft.startAt}
-                          //   status={nft.status}
-                          //   tokenURI={nft.tokenURI}
-                          //   index={nft.index}
+                          maxBidPrice={nft.maxBidPrice}
+                          maxBidder={nft.maxBidder}
+                          duration={nft.duration}
+                          startAt={nft.startAt}
+                          status={nft.status}
+                          tokenURI={nft.tokenURI}
+                          index={nft.index}
                         />
                       </Link>
                     </div>
@@ -107,7 +106,10 @@ export const AuctionView = (props) => {
           </Route>
           <NFT.Provider value={NFTs}>
             <Route path="/MyAssets/onAuction/:id/:index">
-              <NFTauctionView status={() => setLoadingState("not-loaded")} viewState={changeStatus} />
+              <NFTauctionView
+                status={() => setLoadingState("not-loaded")}
+                viewState={changeStatus}
+              />
             </Route>
           </NFT.Provider>
         </Switch>

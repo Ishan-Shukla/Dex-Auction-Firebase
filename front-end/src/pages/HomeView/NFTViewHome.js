@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
+import placeHolder from "../../img/PlaceHolder.svg"
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -39,12 +40,16 @@ export const NFTsView = () => {
     return (
       <div>
         <GoBack url="/"/>
-        <div className="flex p-40 max-h-screen justify-center">
-          <div className="w-full border h-max p-4">
-            <p>Pic Here</p>
+        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+          <div className="w-full flex justify-center border h-max p-4">
+            <img src={placeHolder} alt="PlaceHolder"></img>
           </div>
-          <div className="p-4 w-full flex-grow border">
-            <div>Asset Id-{NFT.tokenId} </div>
+          <div className="p-4 w-full border">
+            <div className="flex w-full h-full flex-col border items-center ">
+              <div className="pt-10 pb-10 text-2xl">Asset Name</div>
+              <div className="self-start pl-5 mb-4 border">Owner- {NFT.owner}</div>
+              <div className="self-start pl-5 w-full h-2/5 border">Asset description</div>
+            </div>
           </div>
         </div>
       </div>

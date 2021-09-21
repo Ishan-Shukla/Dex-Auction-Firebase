@@ -12,7 +12,7 @@ const Home = () => {
         <div className="bg-Subtle-Background border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
           <Content />
         </div>
-        <div className="mt-20">
+        <div>
           <NFTHome />
         </div>
       </Route>

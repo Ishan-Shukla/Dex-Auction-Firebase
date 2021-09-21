@@ -63,30 +63,29 @@ const MarketPlace = () => {
     setAuctions(auctions);
     setLoadingState("loaded");
   }
-  if (loadingState === "loaded")
+  if (loadingState === "loaded" && onAuctions.length)
     return (
       <Router>
         <Route exact path="/Market">
           <div className="flex pt-32 justify-center">
             <div className="p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                 {onAuctions.map((nft) => (
                   <div
                     key={nft.tokenId}
-                    className="border shadow rounded-xl overflow-hidden"
                   >
                     <Link to={`/Market/Auction/${nft.tokenId}`}>
                       <OnAuctionViewCard
-                        // tokenId={nft.tokenId}
-                        // seller={nft.seller}
+                        tokenId={nft.tokenId}
+                        seller={nft.seller}
                         reservePrice={nft.reservePrice}
-                        // maxBidPrice={nft.maxBidPrice}
-                        // maxBidder={nft.maxBidder}
-                        // duration={nft.duration}
-                        // startAt={nft.startAt}
-                        // status={nft.status}
-                        // tokenURI={nft.tokenURI}
-                        // index={nft.index}
+                        maxBidPrice={nft.maxBidPrice}
+                        maxBidder={nft.maxBidder}
+                        duration={nft.duration}
+                        startAt={nft.startAt}
+                        status={nft.status}
+                        tokenURI={nft.tokenURI}
+                        index={nft.index}
                       />
                     </Link>
                   </div>
@@ -100,7 +99,16 @@ const MarketPlace = () => {
         </Route>
       </Router>
     );
-  return <h1>Loading</h1>;
+
+    if (!onAuctions.length) {
+      return (
+        <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">No Assets on Auction</div>
+      );
+    }
+    return (
+      <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">loading</div>
+    );
 };
 
 export default MarketPlace;
+

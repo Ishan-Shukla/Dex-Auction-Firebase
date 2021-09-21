@@ -7,6 +7,7 @@ import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBa
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
+import placeHolder from "../../img/PlaceHolder.svg";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -42,28 +43,28 @@ export const NFTauctionView = (props) => {
   return (
     <Router>
       <GoBack url="/MyAssets/AuctionView" change={changeStatus} />
-      <div className="flex p-40 max-h-screen justify-center">
-        <div className="w-full border h-max p-4">
-          <p>Pic Here</p>
+      <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+        <div className="w-full flex justify-center border h-max p-4">
+          <img src={placeHolder} alt="PlaceHolder"></img>
         </div>
-        <div className="p-4 w-full flex-grow border">
-          <div>Token ID- {nfts[index].tokenId}</div>
-          <div>Seller- {nfts[index].seller}</div>
-          <div>Reserve Price- {nfts[index].reservePrice}</div>
-          <div>maxBidPrice- {nfts[index].maxBidPrice}</div>
-          <div>maxBidder- {nfts[index].maxBidder}</div>
-          <div>Duration- {nfts[index].duration}</div>
-          <div>Start At- {nfts[index].startAt}</div>
-          <div>Status- {nfts[index].status}</div>
-          <div>tokenURI- {nfts[index].tokenURI}</div>
-        </div>
-        <div>
-          <button
-            onClick={cancelAuction}
-            className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
-          >
-            Cancel Auction
-          </button>
+        <div className="p-4 w-full border">
+          <div className="flex w-full h-full flex-col border items-center ">
+            <div>Token ID- {nfts[index].tokenId}</div>
+            <div>Seller- {nfts[index].seller}</div>
+            <div>Reserve Price- {nfts[index].reservePrice}</div>
+            <div>maxBidPrice- {nfts[index].maxBidPrice}</div>
+            <div>maxBidder- {nfts[index].maxBidder}</div>
+            <div>Duration- {nfts[index].duration}</div>
+            <div>Start At- {nfts[index].startAt}</div>
+            <div>Status- {nfts[index].status}</div>
+            <div>tokenURI- {nfts[index].tokenURI}</div>
+            <button
+              onClick={cancelAuction}
+              className="flex items-center p-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+            >
+              Cancel Auction
+            </button>
+          </div>
         </div>
       </div>
     </Router>

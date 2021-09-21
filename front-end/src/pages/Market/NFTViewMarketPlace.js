@@ -6,6 +6,7 @@ import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import { ethers } from "ethers";
 import { useParams, useHistory } from "react-router";
+import placeHolder from "../../img/PlaceHolder.svg";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -35,6 +36,11 @@ export const NFTViewMarketPlace = (props) => {
     props.status();
   };
 
+  const isSeller = (seller) => {
+    const address = ethers.utils.getAddress(Account.toString());
+    return seller.localeCompare(address) === 0;
+  };
+
   async function loadNFTs() {
     const Provider = new ethers.providers.JsonRpcProvider();
     let contract = new ethers.Contract(auction, AUCTION.abi, Provider);
@@ -53,7 +59,7 @@ export const NFTViewMarketPlace = (props) => {
       tokenURI: URI,
     };
     const address = ethers.utils.getAddress(Account.toString());
-    if (auc.seller.localeCompare(address) === 0) {
+    if (isSeller(auc.seller)) {
       setLock(true);
     }
     const blockno = await provider.getBlockNumber();
@@ -96,38 +102,71 @@ export const NFTViewMarketPlace = (props) => {
 
   if (loadingState === "loaded")
     return (
-      <>
+      <div>
         <GoBack change={changeState} url="/Market" />
-        <div className="flex p-40 max-h-screen justify-center">
-          <div className="w-full border h-max p-4">
-            <p>Pic Here</p>
+        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+          <div className="w-full flex justify-center border h-max p-4">
+            <img src={placeHolder} alt="PlaceHolder"></img>
           </div>
-          <div className="p-4 w-full flex-grow border">
-            <div>Token ID- {onAuction.tokenId}</div>
-            <div>Seller- {onAuction.seller}</div>
-            <div>Reserve Price- {onAuction.reservePrice}</div>
-            <div>maxBidPrice- {onAuction.maxBidPrice}</div>
-            <div>maxBidder- {onAuction.maxBidder}</div>
-            <div>Duration- {onAuction.duration}</div>
-            <div>Start At- {onAuction.startAt}</div>
-            <div>Status- {onAuction.status}</div>
-            <div>tokenURI- {onAuction.tokenURI}</div>
-          </div>
-          {lock ? null : (
-            <div>
-              <input
-                placeholder="Price"
-                className="mt-8 border rounded p-4"
-                onChange={(e) =>
-                  updatePriceInput({ ...priceInput, price: e.target.value })
-                }
-              />
-              <button onClick={placeBid}>Place Bid</button>
+          <div className="p-4 w-full border">
+            <div className="flex w-full h-full flex-col border items-center ">
+              <div className="pb-5 pt-5 text-2xl border">Asset Name</div>
+              <div className="self-start pl-5 mb-4 border">
+                Token ID- {onAuction.tokenId}
+              </div>
+              <div className="self-start pl-5 w-full h-1/5 border">
+                Asset description
+              </div>
+              {!isSeller(onAuction.seller) ? (
+                <div className="p-2 w-full border">
+                  Seller- {onAuction.seller}
+                </div>
+              ) : null}
+              {onAuction.startAt === 0 ? (
+                <div className="p-2 w-full border">
+                  Reserve Price- {onAuction.reservePrice}
+                </div>
+              ) : (
+                <>
+                  <div className="p-2 w-full border">
+                    maxBidder- {onAuction.maxBidder}
+                  </div>
+                  <div className="p-2 w-full border">
+                    Current Price- {onAuction.maxBidPrice}
+                  </div>
+                  <div className="w-full border">
+                    Duration- Left Timer will be here
+                  </div>
+                </>
+              )}
+              <div>
+                {lock ? null : (
+                  <div className="flex">
+                    <input
+                      placeholder="Price"
+                      className="mt-2 border rounded p-4"
+                      onChange={(e) =>
+                        updatePriceInput({
+                          ...priceInput,
+                          price: e.target.value,
+                        })
+                      }
+                    />
+
+                    <button
+                      className="flex items-center justify-center p-4 m-2 transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+                      onClick={placeBid}
+                    >
+                      Place Bid
+                    </button>
+                  </div>
+                )}
+                {claim ? <button onClick={claimNFT}>Claim NFT</button> : null}
+              </div>
             </div>
-          )}
-          {claim ? <button onClick={claimNFT}>Claim NFT</button> : null}
+          </div>
         </div>
-      </>
+      </div>
     );
   return <h1>Loading</h1>;
 };

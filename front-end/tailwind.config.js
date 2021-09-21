@@ -21,6 +21,8 @@ module.exports = {
     },
     plugins: [
       require('@mjwebs/tailwindcss-frosted'),
+      require('tailwind-scrollbar'),
+      require('tailwind-scrollbar-hide'),
     ],
   },
 };

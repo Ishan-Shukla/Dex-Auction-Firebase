@@ -66,17 +66,16 @@ export const AssetView = (props) => {
             <div className="flex pt-32 justify-center">
               <GoBack change={changeStatus} url="/MyAssets"/>
               <div className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                   {NFTs.map((nft) => (
                     <div
                       key={nft.tokenId}
-                      className="border shadow rounded-xl overflow-hidden"
                     >
                       <Link
                         to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}
                         
                       >
-                        <ViewCard tokenId={nft.tokenId} owner={nft.owner} />
+                        <ViewCard tokenId={nft.tokenId}/>
                       </Link>
                     </div>
                   ))}

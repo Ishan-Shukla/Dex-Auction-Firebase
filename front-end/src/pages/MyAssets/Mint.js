@@ -49,7 +49,7 @@ const Mint = (props) => {
   }
 
   return (
-    <div className="min-w-full">
+    <div className=" pt-32 min-w-full">
       <GoBack url="/MyAssets" change={changeStatus}/>
       <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
         <input
