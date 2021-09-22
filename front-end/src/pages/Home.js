@@ -9,10 +9,10 @@ const Home = () => {
   return (
     <Router>
       <Route exact path="/">
-        <div className="bg-Subtle-Background border-b-4 border-blue-100 border-opacity-90 shadow-bar border-dotted z-0 bg-cover bg-center min-h-screen">
+        <div className="bg-Subtle-Background shadow-bar z-0 bg-cover bg-center min-h-screen">
           <Content />
         </div>
-        <div>
+        <div className="min-h-screen">
           <NFTHome />
         </div>
       </Route>

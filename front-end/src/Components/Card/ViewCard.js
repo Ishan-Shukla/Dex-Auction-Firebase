@@ -3,7 +3,7 @@ import placeHolder from "../../img/PlaceHolder.svg";
 
 function ViewCard(props) {
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-lg ml-auto mr-auto h-96 w-64 shadow-lg transform transition duration-500 hover:scale-110">
+    <div className="relative flex flex-col overflow-hidden rounded-lg ml-auto mr-auto h-96 w-64 shadow-lg transform transition duration-500 hover:scale-110 hover:shadow-xl">
       <div className="h-4/5">
         <div className="absolute -top-5">
           <img src={placeHolder} alt="PlaceHolder"></img>
