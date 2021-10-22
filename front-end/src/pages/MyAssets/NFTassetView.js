@@ -106,7 +106,7 @@ export const NFTassetView = (props) => {
               <div className="flex justify-evenly w-full mt-14 pl-8 pr-8 border">
                 <button
                   onClick={BurnAsset}
-                  className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+                  className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-red-600 hover:text-white border-2 border-gray-900 focus:outline-none"
                 >
                   Burn Asset
                 </button>

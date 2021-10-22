@@ -20,9 +20,7 @@ module.exports = {
       extend: {},
     },
     plugins: [
-      require('@mjwebs/tailwindcss-frosted'),
-      require('tailwind-scrollbar'),
-      require('tailwind-scrollbar-hide'),
+      require('daisyui'),
     ],
   },
 };

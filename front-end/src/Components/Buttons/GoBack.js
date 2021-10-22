@@ -1,7 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router";
-import back from "../../img/Back.svg";
-import back1 from "../../img/Back2.svg";
+
 export const GoBack = (props) => {
   const history = useHistory();
 
