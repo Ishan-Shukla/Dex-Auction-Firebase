@@ -68,7 +68,7 @@ const Mint = (props) => {
         />
         <button
           onClick={createAsset}
-          className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
+          className="font-bold mt-4 p-4 shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
         >
           Create Digital Asset
         </button>
