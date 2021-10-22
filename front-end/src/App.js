@@ -67,7 +67,7 @@ function App() {
   };
 
   if (loadingState !== "loaded") {
-    return <h1>Loading</h1>;
+    return <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">Connect to Metamask</div>;
   }
   if (chainLock) {
     return <h1>Connected to wrong Chain</h1>;
