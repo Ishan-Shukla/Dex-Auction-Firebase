@@ -17,19 +17,13 @@ export const GoBack = (props) => {
   return (
     <div className="fixed left-8 top-40">
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 252.5 155.42136"
+        viewBox="0 0 32 32"
+        class="icon icon-chevron-left"
+        aria-hidden="true"
         onClick={work}
-        className="h-16 w-16 p-2 transform transition ease-in duration-200 hover:scale-90 focus:outline-none"
+        className="h-20 w-20 transform scale-90 transition ease-in duration-200 hover:scale-75 focus:outline-none"
       >
-        <polyline
-          points="245.5 77.711 7 77.711 77.711 7 7 77.711 77.711 148.421"
-          fill="none"
-          stroke="#000"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="14"
-        />
+        <path d="M14.19 16.005l7.869 7.868-2.129 2.129-9.996-9.997L19.937 6.002l2.127 2.129z" />
       </svg>
     </div>
   );
