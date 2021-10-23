@@ -39,7 +39,7 @@ function Logo() {
         />
       </div>
       <div className="ml-4">
-        <p className=" leading-none pt-3 font-Hanseif">
+        <p className=" leading-none pt-3 font-Hanseif select-none">
           DeX- <br />
           Auction{" "}
         </p>
