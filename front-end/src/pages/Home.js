@@ -1,10 +1,26 @@
-import React from "react";
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, useLocation} from "react-router-dom";
 import Content from "../Components/Landing/Content";
 import { NFTsView } from "./HomeView/NFTViewHome";
 import { NFTHome } from "./HomeView/NFTHome";
+import { useHistory } from "react-router";
 
 const Home = () => {
+  const [status, setStatus] = useState(0);
+  const [loadingState, setLoadingState] = useState("not-loaded");
+  const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    const path = location.pathname;
+    console.log("Location state");
+    console.log(location.state);
+    console.log("---------------");
+  }, [location]);
+
+  const changeStatus = () => {
+    setLoadingState("not-loaded");
+  };
 
   return (
     <Router>
