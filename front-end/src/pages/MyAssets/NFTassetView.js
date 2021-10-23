@@ -29,6 +29,8 @@ export const NFTassetView = (props) => {
     price: "",
     duration: "",
   });
+  let decimal = 1;
+
   const [check, setCheck] = useState(0);
 
   const Bvalid = "border-gray-200 placeholder-gray-400";
@@ -126,7 +128,6 @@ export const NFTassetView = (props) => {
       return;
     }
     openApproval();
-
   }
 
   return (
@@ -167,13 +168,32 @@ export const NFTassetView = (props) => {
         <div className="pt-32 min-w-full">
           <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
             <input
-              placeholder="Auction Price"
+              placeholder="Auction Price (ETH)"
+              value={auctionInput.price}
               className={`mt-8 border ${
                 check === 0 || check === 2 ? Bvalid : Binvalid
               } rounded p-4 placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
                 check === 1 || check === 3 ? Oinvalid : Ovalid
               }`}
               onChange={(e) => {
+                if (!isNaN(+e.target.value)) {
+                  const temp = e.target.value.indexOf(".");
+                  if (temp) {
+                    if (e.target.value.substring(temp + 1).length <= 18) {
+                      updateAuctionInput({
+                        ...auctionInput,
+                        price: e.target.value,
+                      });
+                    }
+                  } else {
+                    updateAuctionInput({
+                      ...auctionInput,
+                      price: e.target.value,
+                    });
+                  }
+                } else {
+                  return;
+                }
                 if (
                   auctionInput.price.length === 1 &&
                   e.nativeEvent.data === null
@@ -183,7 +203,6 @@ export const NFTassetView = (props) => {
                 if (!auctionInput.price) {
                   setCheck(check === 3 ? 2 : 0);
                 }
-                updateAuctionInput({ ...auctionInput, price: e.target.value });
               }}
             />
             <textarea
@@ -261,7 +280,9 @@ export const NFTassetView = (props) => {
                     Approve NFT
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">Explain all rules and regulations here.</p>
+                    <p className="text-sm text-gray-500">
+                      Explain all rules and regulations here.
+                    </p>
                   </div>
 
                   <div className="mt-4">
@@ -322,7 +343,9 @@ export const NFTassetView = (props) => {
                     NFT Approved Successfully
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">Continue to Create Auction</p>
+                    <p className="text-sm text-gray-500">
+                      Continue to Create Auction
+                    </p>
                   </div>
 
                   <div className="mt-4">
