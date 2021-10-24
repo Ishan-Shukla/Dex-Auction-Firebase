@@ -27,22 +27,35 @@ export const NFTassetView = (props) => {
 
   const [auctionInput, updateAuctionInput] = useState({
     price: "",
-    duration: "",
+    total: 0,
+    days: 0,
+    hours: 0,
   });
-  let decimal = 1;
+  // const [time, setTime] = useState({ total: 0, days: 0, hours: 0 });
 
   const [check, setCheck] = useState(0);
 
-  const Bvalid = "border-gray-200 placeholder-gray-400";
+  const Bvalid = "border-gray-200 placeholder-gray-600";
   const Binvalid = "border-red-600 placeholder-red-600";
   const Ovalid = "ring-black";
   const Oinvalid = "ring-red-400";
 
   const [isApprovalOpen, setApprovalModal] = useState(false);
   const [isCreateOpen, setCreateModal] = useState(false);
+  const [isScrollActive, setScroll] = useState(false);
 
   const changeStatus = () => {
     props.status();
+  };
+
+  const activateScroll = () => {
+    setScroll(true);
+    console.log("Scroll Activated");
+  };
+
+  const deactivateScroll = () => {
+    setScroll(false);
+    console.log("Scroll Deactivated");
   };
 
   const openApproval = () => {
@@ -54,7 +67,6 @@ export const NFTassetView = (props) => {
   };
 
   const closeAndApprove = async () => {
-    const { price, duration } = auctionInput;
     await approveAsset(nfts[index].tokenId);
     setApprovalModal(false);
     setCreateModal(true);
@@ -62,9 +74,10 @@ export const NFTassetView = (props) => {
 
   const closeCreate = () => {};
 
+// error handling below
   const closeAndCreate = async () => {
-    const { price, duration } = auctionInput;
-    await createAuction(nfts[index].tokenId, price, duration);
+    const { price, total} = auctionInput;
+    await createAuction(nfts[index].tokenId, price, total * 3600);
     setCreateModal(false);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
@@ -116,9 +129,10 @@ export const NFTassetView = (props) => {
   }
 
   async function approveAndCreate() {
-    const { price, duration } = auctionInput;
-    if (!price || !duration) {
-      if (!price && !duration) {
+    const { price, total } = auctionInput;
+    console.log(price + "    "+total);
+    if (!price || total === 0) {
+      if (!price && total === 0) {
         setCheck(3);
       } else if (!price) {
         setCheck(1);
@@ -129,6 +143,85 @@ export const NFTassetView = (props) => {
     }
     openApproval();
   }
+
+  const incrementDay = () => {
+    // console.log(newTime);
+    if (auctionInput.total === 720) {
+      return;
+    } else {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total + 24,
+        days: prevState.days + 1,
+        hours: prevState.hours,
+      }));
+    }
+    // setTime((prevState) => ({
+    //   total: prevState.total,
+    //   days: prevState.days + 1,
+    //   hours: prevState.hours,
+    // }));
+    // console.log("Day incremeted");
+  };
+
+  const decrementDay = () => {
+    if (auctionInput.days === 0) {
+      return;
+    } else if (auctionInput.total === 24) {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total - 23,
+        days: prevState.days - 1,
+        hours: prevState.hours + 1,
+      }));
+    } else {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total - 24,
+        days: prevState.days - 1,
+        hours: prevState.hours,
+      }));
+    }
+    // setTime((prevState) => ({
+    //   total: prevState.total,
+    //   days: prevState.days - 1,
+    //   hours: prevState.hours,
+    // }));
+  };
+
+  const incrementHour = () => {
+    if (auctionInput.total === 720) {
+      return;
+    } else if (auctionInput.hours === 23) {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total + 1,
+        days: prevState.days + 1,
+        hours: 0,
+      }));
+    } else {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total + 1,
+        days: prevState.days,
+        hours: prevState.hours + 1,
+      }));
+    }
+    console.log("Hour incremeted");
+  };
+
+  const decrementHour = () => {
+    if (auctionInput.hours === 0 || auctionInput.total === 1) {
+      return;
+    } else {
+      updateAuctionInput((prevState) => ({
+        price: prevState.price,
+        total: prevState.total - 1,
+        days: prevState.days,
+        hours: prevState.hours - 1,
+      }));
+    }
+  };
 
   return (
     <Router>
@@ -165,16 +258,16 @@ export const NFTassetView = (props) => {
         </div>
       </Route>
       <Route path="/MyAssets/Asset/Create/:id/:index">
-        <div className="pt-32 min-w-full">
+        <div className="pt-10 min-w-full">
           <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
             <input
               placeholder="Auction Price (ETH)"
               value={auctionInput.price}
-              className={`mt-8 border ${
+              className={`mt-8 border select-none ${
                 check === 0 || check === 2 ? Bvalid : Binvalid
               } rounded p-4 placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
                 check === 1 || check === 3 ? Oinvalid : Ovalid
-              }`}
+              } font-semibold`}
               onChange={(e) => {
                 if (!isNaN(+e.target.value)) {
                   const temp = e.target.value.indexOf(".");
@@ -205,32 +298,112 @@ export const NFTassetView = (props) => {
                 }
               }}
             />
-            <textarea
-              placeholder="Auction Duration"
-              className={`mt-2 border ${
-                check === 0 || check === 1 ? Bvalid : Binvalid
-              } rounded p-4 resize-none h-52 overflow-y-auto placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
-                check === 2 || check === 3 ? Oinvalid : Ovalid
-              }`}
-              onChange={(e) => {
-                if (
-                  auctionInput.duration.length === 1 &&
-                  e.nativeEvent.data === null
-                ) {
-                  setCheck(check === 1 ? 3 : 2);
-                }
-                if (!auctionInput.duration) {
-                  setCheck(check === 3 ? 1 : 0);
-                }
-                updateAuctionInput({
-                  ...auctionInput,
-                  duration: e.target.value,
-                });
-              }}
-            />
+            <div
+              className={`mt-2 border border-gray-200 rounded p-4 pt-2`}
+              onMouseEnter={activateScroll}
+              onMouseLeave={deactivateScroll}
+            >
+              <p
+                className={`select-none ${
+                  check === 0 || check === 1 ? "text-gray-600" : "text-red-600"
+                } font-semibold`}
+              >
+                Auction Duration {auctionInput.total}
+              </p>
+              <div className="flex p-4 pt-1">
+                <div className="flex-1 flex flex-col">
+                  <div className="text-2xl text-gray-600 font-semibold ml-auto mr-auto mb-2 select-none">
+                    Days
+                  </div>
+                  <div className="flex justify-arround items-center">
+                    <div
+                      className={`h-10 w-10 ml-20 mr-auto ${
+                        isScrollActive
+                          ? "transform transition-all hover:scale-90 delay-100 duration-400 ease-in opacity-100"
+                          : "transition-all delay-100 ease-out opacity-0"
+                      }`}
+                      onClick={incrementDay}
+                    >
+                      <svg
+                        viewBox="0 0 32 32"
+                        class="icon icon-chevron-top"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true"
+                      >
+                        <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
+                      </svg>
+                    </div>
+                    <div className="text-6xl w-24 text-center text-gray-600 font-semibold ml-auto mr-auto pb-1 select-none">
+                      {auctionInput.days}
+                    </div>
+                    <div
+                      className={`h-10 w-10 ml-auto mr-20 ${
+                        isScrollActive
+                          ? "transform transition-all hover:scale-90 delay-100 duration-400 ease-in opacity-100"
+                          : "transition-all delay-100 ease-out opacity-0"
+                      }`}
+                      onClick={decrementDay}
+                    >
+                      <svg
+                        viewBox="0 0 32 32"
+                        class="icon icon-chevron-bottom"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true"
+                      >
+                        <path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <div className="text-2xl text-gray-600 font-semibold ml-auto mr-auto mb-2 select-none">
+                    Hours
+                  </div>
+                  <div className="flex justify-arround items-center">
+                    <div
+                      className={`h-10 w-10 ml-20 mr-auto ${
+                        isScrollActive
+                          ? "transform transition-all hover:scale-90 delay-100 duration-400 ease-in opacity-100"
+                          : "transition-all delay-100 ease-out opacity-0"
+                      }`}
+                      onClick={incrementHour}
+                    >
+                      <svg
+                        viewBox="0 0 32 32"
+                        class="icon icon-chevron-top"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true"
+                      >
+                        <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
+                      </svg>
+                    </div>
+                    <div className="text-6xl w-24 text-center text-gray-600 font-semibold ml-auto mr-auto pb-1 select-none">
+                      {auctionInput.hours}
+                    </div>
+                    <div
+                      className={`h-10 w-10 ml-auto mr-20 ${
+                        isScrollActive
+                          ? "transform transition-all hover:scale-90 delay-100 duration-400 ease-in opacity-100"
+                          : "transition-all delay-100 ease-out opacity-0"
+                      }`}
+                      onClick={decrementHour}
+                    >
+                      <svg
+                        viewBox="0 0 32 32"
+                        class="icon icon-chevron-bottom"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true"
+                      >
+                        <path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button
               onClick={approveAndCreate}
-              className="font-bold mt-4 p-4 shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+              className="font-bold mt-4 p-4 select-none shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
             >
               Approve And Create Auction
             </button>
@@ -366,3 +539,32 @@ export const NFTassetView = (props) => {
     </Router>
   );
 };
+
+// <svg viewBox="0 0 32 32" class="icon icon-chevron-top" viewBox="0 0 32 32" aria-hidden="true"><path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z"/></svg>
+// <svg viewBox="0 0 32 32" class="icon icon-chevron-bottom" viewBox="0 0 32 32" aria-hidden="true"><path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z"/></svg>
+
+{
+  /* <textarea
+              placeholder="Auction Duration"
+              className={`mt-2 border ${
+                check === 0 || check === 1 ? Bvalid : Binvalid
+              } rounded p-4 resize-none h-52 overflow-y-auto placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
+                check === 2 || check === 3 ? Oinvalid : Ovalid
+              }`}
+              onChange={(e) => {
+                if (
+                  auctionInput.duration.length === 1 &&
+                  e.nativeEvent.data === null
+                ) {
+                  setCheck(check === 1 ? 3 : 2);
+                }
+                if (!auctionInput.duration) {
+                  setCheck(check === 3 ? 1 : 0);
+                }
+                updateAuctionInput({
+                  ...auctionInput,
+                  duration: e.target.value,
+                });
+              }}
+            /> */
+}
