@@ -44,9 +44,19 @@ export const NFTassetView = (props) => {
   const [isCreateOpen, setCreateModal] = useState(false);
   const [isScrollActive, setScroll] = useState(false);
   const [isBurnOpen, setBurnModal] = useState(false);
+  const [isOpen, setModal] = useState(false);
+  const [errorcode, setErrorcode] = useState(0);
 
   const changeStatus = () => {
     props.status();
+  };
+
+  const closeModal = () => {
+    setModal(false);
+  };
+
+  const openModal = () => {
+    setModal(true);
   };
 
   const activateScroll = () => {
@@ -158,7 +168,13 @@ export const NFTassetView = (props) => {
   };
 
   const CloseAndBurn = async () => {
-    await BurnAsset();
+    try {
+      await BurnAsset();
+    } catch (error) {
+      setErrorcode(error.code);
+      openModal(true);
+      return;
+    }
     setBurnModal(false);
   };
 
@@ -320,7 +336,7 @@ export const NFTassetView = (props) => {
                     <div className="flex-1  flex justify-center">
                       <button
                         type="button"
-                        className="px-4 py-2 text-sm font-medium text-gray-600 bg-red-300 border border-transparent rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                        className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                         onClick={CloseAndBurn}
                       >
                         Yes
@@ -329,7 +345,7 @@ export const NFTassetView = (props) => {
                     <div className="flex-1 flex justify-center">
                       <button
                         type="button"
-                        className="px-4 py-2 text-sm font-medium text-gray-600 bg-green-300 border border-transparent rounded-md hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                        className="px-4 py-2 text-sm font-medium text-white bg-green-500 border border-transparent rounded-md hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                         onClick={CloseBurn}
                       >
                         No
@@ -637,9 +653,76 @@ export const NFTassetView = (props) => {
           </Dialog>
         </Transition>
       </Route>
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto"
+          onClose={closeModal}
+        >
+          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+          <div className="min-h-screen px-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0" />
+            </Transition.Child>
+
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="text-xl font-medium leading-6 text-gray-900"
+                >
+                  {errorcode === 4001
+                    ? "Transaction Denied"
+                    : errorcode === -32603
+                    ? "Nonce Too High"
+                    : "Opps an unexpected Error occurred"}
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    {errorcode === 4001
+                      ? `Looks like You denied transaction signature. Burning NFT is not free and requires Ether.`
+                      : errorcode === -32603
+                      ? "This can be easily resolved by reseting your Metamask Account. Go to Settings > Advanced > Reset Account to reset your account. NO, Your Ether won't be lost only account settings will reset."
+                      : `${errorcode}: An Unknown error Occurred and has been reported. Sorry for inconvinience.`}
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                    onClick={closeModal}
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </Router>
   );
 };
-
-// <svg viewBox="0 0 32 32" class="icon icon-chevron-top" viewBox="0 0 32 32" aria-hidden="true"><path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z"/></svg>
-// <svg viewBox="0 0 32 32" class="icon icon-chevron-bottom" viewBox="0 0 32 32" aria-hidden="true"><path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z"/></svg>
