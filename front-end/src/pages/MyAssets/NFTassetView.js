@@ -43,6 +43,7 @@ export const NFTassetView = (props) => {
   const [isApprovalOpen, setApprovalModal] = useState(false);
   const [isCreateOpen, setCreateModal] = useState(false);
   const [isScrollActive, setScroll] = useState(false);
+  const [isBurnOpen, setBurnModal] = useState(false);
 
   const changeStatus = () => {
     props.status();
@@ -68,81 +69,12 @@ export const NFTassetView = (props) => {
 
   const closeAndApprove = async () => {
     await approveAsset(nfts[index].tokenId);
+
     setApprovalModal(false);
     setCreateModal(true);
   };
 
   const closeCreate = () => {};
-
-// error handling below
-  const closeAndCreate = async () => {
-    const { price, total} = auctionInput;
-    await createAuction(nfts[index].tokenId, price, total * 3600);
-    setCreateModal(false);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(asset, ASSET.abi, signer);
-    const balance = await contract.balanceOf(Account.toString());
-    if (balance.toNumber() === 0) {
-      history.push("/MyAssets");
-      changeStatus();
-    } else {
-      history.push("/MyAssets/AssetView");
-      props.viewState();
-    }
-  };
-
-  async function BurnAsset() {
-    const signer = provider.getSigner();
-
-    /* next, create the item */
-    const contract = new ethers.Contract(asset, ASSET.abi, signer);
-    const transaction = await contract.Burn(id);
-    const tx = await transaction.wait();
-    const balance = await contract.balanceOf(Account.toString());
-    if (balance.toNumber() === 0) {
-      history.push("/MyAssets");
-      changeStatus();
-    } else {
-      history.push("/MyAssets/AssetView");
-      props.viewState();
-    }
-  }
-
-  async function approveAsset(tokenId) {
-    const signer = provider.getSigner();
-
-    let contract = new ethers.Contract(asset, ASSET.abi, signer);
-    let transaction = await contract.Approve(tokenId);
-    let tx = await transaction.wait();
-  }
-
-  async function createAuction(tokenId, price, duration) {
-    const signer = provider.getSigner();
-    // console.log(parseInt(duration));
-    let contract = new ethers.Contract(auction, AUCTION.abi, signer);
-    let transaction = await contract.CreateAuction(
-      tokenId,
-      ethers.utils.parseEther(price),
-      parseInt(duration)
-    );
-    let tx = await transaction.wait();
-  }
-
-  async function approveAndCreate() {
-    const { price, total } = auctionInput;
-    console.log(price + "    "+total);
-    if (!price || total === 0) {
-      if (!price && total === 0) {
-        setCheck(3);
-      } else if (!price) {
-        setCheck(1);
-      } else {
-        setCheck(2);
-      }
-      return;
-    }
-    openApproval();
-  }
 
   const incrementDay = () => {
     // console.log(newTime);
@@ -156,12 +88,6 @@ export const NFTassetView = (props) => {
         hours: prevState.hours,
       }));
     }
-    // setTime((prevState) => ({
-    //   total: prevState.total,
-    //   days: prevState.days + 1,
-    //   hours: prevState.hours,
-    // }));
-    // console.log("Day incremeted");
   };
 
   const decrementDay = () => {
@@ -223,6 +149,92 @@ export const NFTassetView = (props) => {
     }
   };
 
+  const openBurn = () => {
+    setBurnModal(true);
+  };
+
+  const CloseBurn = () => {
+    setBurnModal(false);
+  };
+
+  const CloseAndBurn = async () => {
+    await BurnAsset();
+    setBurnModal(false);
+  };
+
+  // error handling below
+  const closeAndCreate = async () => {
+    const { price, total } = auctionInput;
+    await createAuction(nfts[index].tokenId, price, total * 3600);
+    setCreateModal(false);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(asset, ASSET.abi, signer);
+    const balance = await contract.balanceOf(Account.toString());
+    if (balance.toNumber() === 0) {
+      history.push("/MyAssets");
+      changeStatus();
+    } else {
+      history.push("/MyAssets/AssetView");
+      props.viewState();
+    }
+  };
+
+  async function BurnAsset() {
+    const signer = provider.getSigner();
+
+    /* next, create the item */
+    const contract = new ethers.Contract(asset, ASSET.abi, signer);
+    const transaction = await contract.Burn(id);
+    const tx = await transaction.wait();
+    const balance = await contract.balanceOf(Account.toString());
+    if (balance.toNumber() === 0) {
+      history.push("/MyAssets");
+      changeStatus();
+    } else {
+      history.push("/MyAssets/AssetView");
+      props.viewState();
+    }
+  }
+
+  async function approveAsset(tokenId) {
+    const signer = provider.getSigner();
+    let contract = new ethers.Contract(asset, ASSET.abi, signer);
+    let transaction = await contract.Approve(tokenId);
+    let tx = await transaction.wait();
+  }
+
+  async function createAuction(tokenId, price, duration) {
+    const signer = provider.getSigner();
+    // console.log(parseInt(duration));
+    let contract = new ethers.Contract(auction, AUCTION.abi, signer);
+    let transaction = await contract.CreateAuction(
+      tokenId,
+      ethers.utils.parseEther(price),
+      parseInt(duration)
+    );
+    let tx = await transaction.wait();
+  }
+
+  async function approveAndCreate() {
+    const { price, total } = auctionInput;
+    console.log(price + "    " + total);
+    if (!price || total === 0) {
+      if (!price && total === 0) {
+        setCheck(3);
+      } else if (!price) {
+        setCheck(1);
+      } else {
+        setCheck(2);
+      }
+      return;
+    }
+    const signer = provider.getSigner();
+    let contract = new ethers.Contract(asset, ASSET.abi, signer);
+    if ((await contract.getApproved(nfts[index].tokenId)) === auction) {
+      setCreateModal(true);
+    } else openApproval();
+  }
+
   return (
     <Router>
       <GoBack change={() => props.viewState()} url={"/MyAssets/AssetView"} />
@@ -242,8 +254,8 @@ export const NFTassetView = (props) => {
               </div>
               <div className="flex justify-evenly w-full mt-14 pl-8 pr-8 border">
                 <button
-                  onClick={BurnAsset}
-                  className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-red-600 hover:text-white border-2 border-gray-900 focus:outline-none"
+                  onClick={openBurn}
+                  className="flex items-center p-2 pl-4 pr-4  transition ease-in duration-200 uppercase rounded-full hover:bg-red-600 hover:text-white border-2 border-gray-900 hover:border-red-600 focus:outline-none"
                 >
                   Burn Asset
                 </button>
@@ -256,9 +268,82 @@ export const NFTassetView = (props) => {
             </div>
           </div>
         </div>
+        <Transition appear show={isBurnOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            className="fixed inset-0 z-10 overflow-y-auto"
+            onClose={CloseBurn}
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="min-h-screen px-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Dialog.Overlay className="fixed inset-0" />
+              </Transition.Child>
+
+              <span
+                className="inline-block h-screen align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-xl font-medium leading-6 text-gray-900"
+                  >
+                    Burn
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Are you sure You want to burn the NFT?
+                    </p>
+                  </div>
+
+                  <div className=" flex mt-4">
+                    <div className="flex-1  flex justify-center">
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-sm font-medium text-gray-600 bg-red-300 border border-transparent rounded-md hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                        onClick={CloseAndBurn}
+                      >
+                        Yes
+                      </button>
+                    </div>
+                    <div className="flex-1 flex justify-center">
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-sm font-medium text-gray-600 bg-green-300 border border-transparent rounded-md hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                        onClick={CloseBurn}
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
       </Route>
       <Route path="/MyAssets/Asset/Create/:id/:index">
-        <div className="pt-10 min-w-full">
+        <div className="pt-10 min-w-full h-screen">
           <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
             <input
               placeholder="Auction Price (ETH)"
@@ -308,7 +393,7 @@ export const NFTassetView = (props) => {
                   check === 0 || check === 1 ? "text-gray-600" : "text-red-600"
                 } font-semibold`}
               >
-                Auction Duration {auctionInput.total}
+                Auction Duration
               </p>
               <div className="flex p-4 pt-1">
                 <div className="flex-1 flex flex-col">
@@ -403,7 +488,7 @@ export const NFTassetView = (props) => {
             </div>
             <button
               onClick={approveAndCreate}
-              className="font-bold mt-4 p-4 select-none shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+              className="font-bold relative top-64 p-4 select-none shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
             >
               Approve And Create Auction
             </button>
@@ -428,8 +513,6 @@ export const NFTassetView = (props) => {
               >
                 <Dialog.Overlay className="fixed inset-0" />
               </Transition.Child>
-
-              {/* This element is to trick the browser into centering the modal contents. */}
               <span
                 className="inline-block h-screen align-middle"
                 aria-hidden="true"
@@ -454,7 +537,25 @@ export const NFTassetView = (props) => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Explain all rules and regulations here.
+                      Terms and conditions:
+                      <br />
+                      1. NFT will be escrowed till the end of auction.
+                      <br />
+                      2. Auction will be started as soon as it receives first
+                      bid.
+                      <br />
+                      3. DexAuction's cut is the 2% of winning bid.
+                      <br />
+                      4. No charges if auction cancelled before it is over.
+                      <br />
+                      5. If auction cancelled NFT will be returned.
+                      <br />
+                      6. Seller's cut will be transferred as soon as NFT is
+                      Claimed.
+                      <br />
+                      7. If NFT is not claimed within the claiming period. NFT
+                      can be reclaimed by seller, with 25% bid amount as
+                      compensation.
                     </p>
                   </div>
 
@@ -542,29 +643,3 @@ export const NFTassetView = (props) => {
 
 // <svg viewBox="0 0 32 32" class="icon icon-chevron-top" viewBox="0 0 32 32" aria-hidden="true"><path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z"/></svg>
 // <svg viewBox="0 0 32 32" class="icon icon-chevron-bottom" viewBox="0 0 32 32" aria-hidden="true"><path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z"/></svg>
-
-{
-  /* <textarea
-              placeholder="Auction Duration"
-              className={`mt-2 border ${
-                check === 0 || check === 1 ? Bvalid : Binvalid
-              } rounded p-4 resize-none h-52 overflow-y-auto placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
-                check === 2 || check === 3 ? Oinvalid : Ovalid
-              }`}
-              onChange={(e) => {
-                if (
-                  auctionInput.duration.length === 1 &&
-                  e.nativeEvent.data === null
-                ) {
-                  setCheck(check === 1 ? 3 : 2);
-                }
-                if (!auctionInput.duration) {
-                  setCheck(check === 3 ? 1 : 0);
-                }
-                updateAuctionInput({
-                  ...auctionInput,
-                  duration: e.target.value,
-                });
-              }}
-            /> */
-}
