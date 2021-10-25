@@ -30,7 +30,7 @@ function Logo() {
   };
 
   return (
-    <div className="flex z-50 flex-row" onClick={work}>
+    <div className="flex z-50 flex-row cursor-pointer" onClick={work}>
       <div>
         <img
           className="ml-6 z-50 h-10 w-auto mix-blend-overlay sm:h-10"

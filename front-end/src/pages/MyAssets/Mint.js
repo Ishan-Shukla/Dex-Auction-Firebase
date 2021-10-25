@@ -83,9 +83,9 @@ const Mint = (props) => {
 
   return (
     <>
-      <div className=" pt-32 min-w-full">
+      <div className=" flex pl-auto border h-screen pr-auto justify-center">
         <GoBack url="/MyAssets" change={changeStatus} />
-        <div className=" w-1/2 mx-auto pt-20 flex flex-col justify-center pb-12">
+        <div className="flex w-1/2 mt-36 p-4 flex-col font-semibold ">
           <input
             placeholder="Asset Name"
             className={`mt-8 border ${
@@ -125,7 +125,7 @@ const Mint = (props) => {
           />
           <button
             onClick={createAsset}
-            className="font-bold mt-4 p-4 shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+            className="p-4 mt-auto mb-20 transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
           >
             Create Digital Asset
           </button>
@@ -209,3 +209,7 @@ const Mint = (props) => {
 export default Mint;
 // -32603 nonce error
 // 4001   Transaction denied
+
+// pt-32 min-w-full
+//  w-1/2 border mx-auto pt-20 flex flex-col justify-center pb-12
+// font-semibold p-4 shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none
