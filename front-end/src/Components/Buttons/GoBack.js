@@ -17,7 +17,6 @@ export const GoBack = (props) => {
     <div className="fixed left-8 top-40">
       <svg
         viewBox="0 0 32 32"
-        class="icon icon-chevron-left"
         aria-hidden="true"
         onClick={work}
         className="h-20 w-20 transform scale-90 transition ease-in duration-200 hover:scale-75 focus:outline-none"

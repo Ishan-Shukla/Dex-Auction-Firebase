@@ -10,38 +10,51 @@ import MyAssets from "./pages/MyAssets";
 import MarketPlace from "./pages/MarketPlace";
 import { useHistory } from "react-router";
 
-
+// Context for
+// User Account and Metamask Provider
 export const MetamaskProvider = React.createContext();
 export const UserAccount = React.createContext();
 
 function App() {
-  const [Account, setAccount] = useState(0);
-  const [provider, setProvider] = useState(0);
-  const [loadingState, setLoadingState] = useState("not-loaded");
-  const [chainLock, setchainLock] = useState(false);
+  const [Account, setAccount] = useState(0); // User account of logged in user
+  const [provider, setProvider] = useState(0); // Metamask Provider
+  const [loadingState, setLoadingState] = useState("not-loaded"); // Loading state for main return
+  const [chainLock, setchainLock] = useState(false); // true if invalid chain Id
   const history = useHistory();
 
-  const web3modal = new Web3Modal();
-  let web3;
-  let selectedAccount = 0;
+  const web3modal = new Web3Modal(); // Instance of Web3Modal
+  let web3; // web3 connect
 
+  // UseEffect + LoadingState
   useEffect(() => {
-    Connect();
+    if (loadingState === "not-loaded") {
+      Connect(); // Connects to Loading state on start and with change in loading state
+    }
   }, [loadingState]);
 
+  // Connects to Metamask
   const Connect = async () => {
     web3 = await web3modal.connect();
+
+    // Sets Provider
     setProvider(new ethers.providers.Web3Provider(web3));
-    selectedAccount = await window.ethereum.request({
+
+    const selectedAccount = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
+
+    // Sets user Account (i.e. Ethereum address)
     setAccount(() => selectedAccount);
+
+    // Sets loading state to loaded
     setLoadingState("loaded");
-    console.log("Loaded");
+
+    console.log("📡📡📡 Connected To Web3 📡📡📡");
 
     // Subscribe to accounts change
     web3.on("accountsChanged", (accounts) => {
-      console.log(accounts);
+      console.log("Account Changed From: " + Account);
+      console.log("Account Changed To: " + accounts);
       history.replace("/");
       setLoadingState("not-loaded");
     });
@@ -50,6 +63,7 @@ function App() {
     web3.on("chainChanged", (chainId) => {
       console.log(parseInt(chainId));
       if (parseInt(chainId) !== 1337) {
+        console.log("Wrong ChainId: " + chainId);
         if (!chainLock) {
           setchainLock(true);
         }
@@ -66,29 +80,38 @@ function App() {
     });
   };
 
+  // Connect to Metamask or Install Metamask
   if (loadingState !== "loaded") {
-    return <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">Connect to Metamask</div>;
+    return (
+      <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">
+        Connect to Metamask
+      </div>
+    );
   }
+
+  // if not connected to chainId other than 1337
   if (chainLock) {
     return <h1>Connected to wrong Chain</h1>;
   }
+
+  // If everyThing goes well
   return (
     <Router>
-      <MetamaskProvider.Provider value={provider}>
+      <MetamaskProvider.Provider value={provider}>  {/* Provides Metamask Provider to other Components */}
         <div className="App">
-          <TopBar />
-          <Navbar />
+          <TopBar />  {/* Top Frosted Glass bar with DexAuction Logo */}
+          <Navbar />  {/* Side Floating navigation bar to navigate b/w MyAssets & Marketplace */}
           <div>
             <Switch>
               <Route exact path="/">
-                <Home />
+                <Home />  {/* Landing Page */}
               </Route>
               <UserAccount.Provider value={Account}>
                 <Route exact path="/Market">
-                  <MarketPlace />
+                  <MarketPlace /> {/* MarketPlace Page */}
                 </Route>
                 <Route exact path="/MyAssets">
-                  <MyAssets />
+                  <MyAssets /> {/* MyAssets page */}
                 </Route>
               </UserAccount.Provider>
             </Switch>

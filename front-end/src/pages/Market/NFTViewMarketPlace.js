@@ -7,20 +7,20 @@ import { UserAccount } from "../../App";
 import { ethers } from "ethers";
 import { useParams, useHistory } from "react-router";
 import placeHolder from "../../img/PlaceHolder.svg";
+import { formatEther } from "@ethersproject/units";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 const auction = process.env.REACT_APP_AUCTION_BASE;
 
 export const NFTViewMarketPlace = (props) => {
-  const [onAuction, setAuction] = useState();
+  const [NFTonAuction, setAuction] = useState();
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [priceInput, updatePriceInput] = useState({
     price: "",
   });
   const [lock, setLock] = useState(false);
   const [claim, setClaim] = useState(false);
-
   const history = useHistory();
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
@@ -50,8 +50,8 @@ export const NFTViewMarketPlace = (props) => {
     const auc = {
       tokenId: data.tokenId.toNumber(),
       seller: data.seller.toString(),
-      reservePrice: data.startingPrice.toString(),
-      maxBidPrice: data.maxBidPrice.toString(),
+      reservePrice: formatEther(data.startingPrice.toString()),
+      maxBidPrice: formatEther(data.maxBidPrice.toString()),
       maxBidder: data.maxBidder.toString(),
       duration: data.duration.toNumber(),
       startAt: data.startAt.toNumber(),
@@ -105,41 +105,46 @@ export const NFTViewMarketPlace = (props) => {
       <div>
         <GoBack change={changeState} url="/Market" />
         <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
-          <div className="w-full flex justify-center border h-max p-4">
+          <div className="w-full flex justify-center h-max p-4 border-r-2">
             <img src={placeHolder} alt="PlaceHolder"></img>
           </div>
-          <div className="p-4 w-full border">
-            <div className="flex w-full h-full flex-col border items-center ">
-              <div className="pb-5 pt-5 text-2xl border">Asset Name</div>
-              <div className="self-start pl-5 mb-4 border">
-                Token ID- {onAuction.tokenId}
+          <div className="p-4 w-full cursor-default">
+            <div className="flex w-full h-full flex-col font-semibold">
+              <div className="flex border-b-2">
+                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                  #{NFTonAuction.tokenId}
+                </div>
               </div>
-              <div className="self-start pl-5 w-full h-1/5 border">
+              <div className="p-2">
+                <div>Owner</div>
+                <div className="pl-4">{NFTonAuction.seller}</div>
+              </div>
+              <div className="p-2">
                 Asset description
               </div>
-              {!isSeller(onAuction.seller) ? (
-                <div className="p-2 w-full border">
-                  Seller- {onAuction.seller}
+              {!isSeller(NFTonAuction.seller) ? (
+                <div className="p-2">
+                  Seller- {NFTonAuction.seller}
                 </div>
               ) : null}
-              {onAuction.startAt === 0 ? (
-                <div className="p-2 w-full border">
-                  Reserve Price- {onAuction.reservePrice}
+              {NFTonAuction.startAt === 0 ? (
+                <div className="p-2">
+                  Reserve Price- {NFTonAuction.reservePrice} ETH
                 </div>
               ) : (
                 <>
-                  <div className="p-2 w-full border">
-                    maxBidder- {onAuction.maxBidder}
+                  <div className="p-2">
+                    maxBidder- {NFTonAuction.maxBidder}
                   </div>
-                  <div className="p-2 w-full border">
-                    Current Price- {onAuction.maxBidPrice}
+                  <div className="p-2">
+                    Current Price- {NFTonAuction.maxBidPrice} ETH
                   </div>
-                  <div className="w-full border">
+                  <div className="p-2">
                     Duration- Left Timer will be here
                   </div>
                 </>
               )}
-              <div>
+              <div className="mt-auto">
                 {lock ? null : (
                   <div className="flex">
                     <input
