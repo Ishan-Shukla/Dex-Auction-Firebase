@@ -27,12 +27,12 @@ export const NFTHome = (props) => {
     let counter = 0;
     let assets = await Promise.all(
       data
-        .filter((nft) => nft.TokenID.toNumber() !== 0)
+        .filter((nft) => nft.tokenId.toNumber() !== 0)
         .filter((nft) => blackHole.localeCompare(nft.owner.toString()) !== 0)
         .map(async (NFT) => {
-          const tokenURI = await contract.tokenURI(NFT.TokenID);
+          const tokenURI = await contract.tokenURI(NFT.tokenId);
           let asset = {
-            tokenId: NFT.TokenID.toNumber(),
+            tokenId: NFT.tokenId.toNumber(),
             owner: NFT.owner,
             tokenURI,
             index: counter++,

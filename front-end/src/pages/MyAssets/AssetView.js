@@ -36,18 +36,18 @@ export const AssetView = (props) => {
     const finalData = data
       .slice()
       .sort((a, b) =>
-        a.TokenID.toNumber() > b.TokenID.toNumber()
+        a.tokenId.toNumber() > b.tokenId.toNumber()
           ? 1
-          : b.TokenID.toNumber() > a.TokenID.toNumber()
+          : b.tokenId.toNumber() > a.tokenId.toNumber()
           ? -1
           : 0
       );
     let counter = 0;
     let assets = await Promise.all(
       finalData.map(async (NFT) => {
-        const tokenURI = await contract.tokenURI(NFT.TokenID);
+        const tokenURI = await contract.tokenURI(NFT.tokenId);
         let asset = {
-          tokenId: NFT.TokenID.toNumber(),
+          tokenId: NFT.tokenId.toNumber(),
           owner: NFT.owner.toString(),
           tokenURI,
           index: counter++,

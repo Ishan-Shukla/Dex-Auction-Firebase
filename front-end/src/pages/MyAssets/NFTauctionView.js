@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, Fragment } from "react";
 import { useParams, useHistory } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
-import { NFT } from "./AuctionView";
 import { Dialog, Transition } from "@headlessui/react";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
@@ -18,10 +17,9 @@ const asset = process.env.REACT_APP_DEX_AUCTION;
 
 export const NFTauctionView = (props) => {
   const history = useHistory();
-  const nfts = useContext(NFT);
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
-  const { id, index } = useParams();
+  const { id } = useParams();
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [NFTs, setNFTs] = useState([]);
   const [status, setStatus] = useState("");
@@ -33,11 +31,7 @@ export const NFTauctionView = (props) => {
   };
 
   useEffect(() => {
-    const work = async () => {
-      await loadNFTs();
-    };
-    work();
-    setLoadingState("loaded");
+    loadNFTs();
   }, []);
 
   async function loadNFTs() {
@@ -72,19 +66,21 @@ export const NFTauctionView = (props) => {
       const auctionPeriod = auctionNFT.startAt + auctionNFT.duration;
       if (time < auctionPeriod) {
         setStatus("Active");
-      }else if (time < auctionPeriod + 86400) {
-        setStatus("Over")
-      }else{
-        setStatus("Un-Claimed")
+      } else if (time < auctionPeriod + 86400) {
+        setStatus("Over");
+      } else {
+        setStatus("Un-Claimed");
       }
     }
+    setLoadingState("loaded");
   }
 
   async function cancelAuction() {
     const signer = provider.getSigner();
     const contract = new ethers.Contract(auction, AUCTION.abi, signer);
-    let transaction = await contract.CancelAuction(nfts[index].tokenId);
+    let transaction = await contract.CancelAuction(NFTs.tokenId);
     let tx = await transaction.wait();
+    console.log(tx);
     const balance = await contract.auctionBalance(Account.toString());
     console.log(balance.toNumber());
 
@@ -128,9 +124,9 @@ export const NFTauctionView = (props) => {
             <img src={placeHolder} alt="PlaceHolder"></img>
           </div>
           <div className="p-4 w-full cursor-default">
-            <div className="flex w-full h-full flex-col font-semibold ">
+            <div className="flex w-full h-full flex-col font-semibold">
               <div className="flex border-b-2">
-                <div className="text-4xl font-Hanseif pb-1 flex-1">
+                <div className="text-5xl font-Hanseif pb-1 flex-1">
                   #{NFTs.tokenId}
                 </div>
                 <div className="flex-none place-self-end text-blue-400 animate-pulse">
@@ -157,141 +153,141 @@ export const NFTauctionView = (props) => {
           </div>
         </div>
         <Transition appear show={isErrorModalOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={closeErrorModal}
-        >
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-          <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0" />
-            </Transition.Child>
+          <Dialog
+            as="div"
+            className="fixed inset-0 z-10 overflow-y-auto"
+            onClose={closeErrorModal}
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="min-h-screen px-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Dialog.Overlay className="fixed inset-0" />
+              </Transition.Child>
 
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-xl font-medium leading-6 text-gray-900"
-                >
-                  {errorcode === 4001
-                    ? "Transaction Denied"
-                    : errorcode === -32603
-                    ? "Nonce Too High"
-                    : "Opps an unexpected Error occurred"}
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
+              <span
+                className="inline-block h-screen align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-xl font-medium leading-6 text-gray-900"
+                  >
                     {errorcode === 4001
-                      ? `Looks like You denied transaction signature. Cancelling NFT is not free and requires Ether.`
+                      ? "Transaction Denied"
                       : errorcode === -32603
-                      ? "This can be easily resolved by reseting your Metamask Account. Go to Settings > Advanced > Reset Account to reset your account. NO, Your Ether won't be lost only account settings will reset."
-                      : `${errorcode}: An Unknown error Occurred and has been reported. Sorry for inconvinience.`}
-                  </p>
-                </div>
+                      ? "Nonce Too High"
+                      : "Opps an unexpected Error occurred"}
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      {errorcode === 4001
+                        ? `Looks like You denied transaction signature. Cancelling NFT is not free and requires Ether.`
+                        : errorcode === -32603
+                        ? "This can be easily resolved by reseting your Metamask Account. Go to Settings > Advanced > Reset Account to reset your account. NO, Your Ether won't be lost only account settings will reset."
+                        : `${errorcode}: An Unknown error Occurred and has been reported. Sorry for inconvinience.`}
+                    </p>
+                  </div>
 
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeErrorModal}
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      className="px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      onClick={closeErrorModal}
+                    >
+                      OK
+                    </button>
+                  </div>
+                </div>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={isCancelModalOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            className="fixed inset-0 z-10 overflow-y-auto"
+            onClose={closeCancelModal}
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+            <div className="min-h-screen px-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Dialog.Overlay className="fixed inset-0" />
+              </Transition.Child>
+
+              <span
+                className="inline-block h-screen align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-xl font-medium leading-6 text-gray-900"
                   >
-                    OK
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
-      <Transition appear show={isCancelModalOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={closeCancelModal}
-        >
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-          <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0" />
-            </Transition.Child>
+                    Cancel Auction
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      {status === "Inactive"
+                        ? `On cancellation your NFT will be transferred back to You.`
+                        : status === "Active"
+                        ? "Auction is Live and accepting Bids. On cancellation only NFT will be transferred back."
+                        : "NFT has not been claimed by the winning bidder. On cancellation NFT + 25% bid will be transferred."}
+                    </p>
+                  </div>
 
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-xl font-medium leading-6 text-gray-900"
-                >
-                  Cancel Auction
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    {status === "Inactive"
-                      ? `On cancellation your NFT will be transferred back to You.`
-                      : status === "Active"
-                      ? "Auction is Live and accepting Bids. On cancellation only NFT will be transferred back."
-                      : "NFT has not been claimed by the winning bidder. On cancellation NFT + 25% bid will be transferred."}
-                  </p>
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      className="px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                      onClick={closeAndCancel}
+                    >
+                      Continue
+                    </button>
+                  </div>
                 </div>
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeAndCancel}
-                  >
-                    Continue
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
       </Router>
     );
   } else {

@@ -27,7 +27,7 @@ export const NFTsView = () => {
     console.log(data);
     const URI = await contract.tokenURI(id);
     const nft = {
-      tokenId: data.TokenID.toNumber(),
+      tokenId: data.tokenId.toNumber(),
       owner: data.owner,
       URI
     };
