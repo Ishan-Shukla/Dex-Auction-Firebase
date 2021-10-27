@@ -10,7 +10,6 @@ import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { Dialog, Transition } from "@headlessui/react";
-import { formatEther } from "@ethersproject/units";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -18,9 +17,7 @@ const auction = process.env.REACT_APP_AUCTION_BASE;
 
 export const NFTassetView = (props) => {
   const history = useHistory();
-
   const nfts = useContext(NFT);
-
   const { id, index } = useParams();
 
   const provider = useContext(MetamaskProvider);
@@ -60,16 +57,21 @@ export const NFTassetView = (props) => {
   async function loadNFTs() {
     const signer = await provider.getSigner();
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
+
     const data = await contract.getAsset(id);
+
     const tokenURI = await contract.tokenURI(data.tokenId);
-    const assets = {
+
+    const organizedData = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner.toString(),
       tokenURI,
     };
-    setNFTs(assets);
-    console.log(data);
-    console.log(assets);
+
+    console.log("---NFT View (MyAssets)---");
+    console.log("Viewing NFT (TokenId): " + organizedData.tokenId);
+
+    setNFTs(organizedData);
     setLoadingState("loaded");
   }
 
@@ -106,7 +108,9 @@ export const NFTassetView = (props) => {
     setCreateModal(true);
   };
 
-  const closeCreate = () => {};
+  const closeCreate = () => {
+    return;
+  };
 
   const incrementDay = () => {
     // console.log(newTime);
@@ -219,11 +223,17 @@ export const NFTassetView = (props) => {
 
   async function BurnAsset() {
     const signer = provider.getSigner();
-
-    /* next, create the item */
     const contract = new ethers.Contract(asset, ASSET.abi, signer);
+
     const transaction = await contract.Burn(id);
     const tx = await transaction.wait();
+
+    console.log(tx);
+    console.log("---Burn---");
+    console.log("Burn Successful");
+    console.log("Token ID: " + tx.events[0].args[2].toNumber());
+    console.log("Block no.: " + tx.blockNumber);
+    
     const balance = await contract.balanceOf(Account.toString());
     if (balance.toNumber() === 0) {
       history.push("/MyAssets");
@@ -232,14 +242,14 @@ export const NFTassetView = (props) => {
       history.push("/MyAssets/AssetView");
       props.viewState();
     }
-  }
+  };
 
   async function approveAsset(tokenId) {
     const signer = provider.getSigner();
     let contract = new ethers.Contract(asset, ASSET.abi, signer);
     let transaction = await contract.Approve(tokenId);
     let tx = await transaction.wait();
-  }
+  };
 
   async function createAuction(tokenId, price, duration) {
     const signer = provider.getSigner();
@@ -251,7 +261,7 @@ export const NFTassetView = (props) => {
       parseInt(duration)
     );
     let tx = await transaction.wait();
-  }
+  };
 
   async function approveAndCreate() {
     const { price, duration: total } = auctionInput;
@@ -271,7 +281,8 @@ export const NFTassetView = (props) => {
     if ((await contract.getApproved(nfts[index].tokenId)) === auction) {
       setCreateModal(true);
     } else openApproval();
-  }
+  };
+
   if (loadingState === "loaded") {
     return (
       <Router>

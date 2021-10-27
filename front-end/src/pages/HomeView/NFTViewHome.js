@@ -35,8 +35,8 @@ export const NFTViewHome = () => {
       owner: data.owner,
       URI,
     };
-
-    console.log("NFT View of TokenId: " + nft.tokenId);
+    console.log("---NFT View (Home)---");
+    console.log("Viewing NFT (TokenId): " + nft.tokenId);
 
     setNFT(nft);
     setLoadingState("loaded");

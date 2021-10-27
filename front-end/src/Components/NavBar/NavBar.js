@@ -3,26 +3,18 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [status, setStatus] = useState(0);
-  const [loadingState, setLoadingState] = useState("not-loaded");
   const location = useLocation();
 
   useEffect(() => {
     const path = location.pathname;
     if (path.includes("/MyAssets")) {
-      console.log("This is MyAssets");
       setStatus(1);
     } else if (path.includes("/Market")) {
-      console.log("This is Market");
       setStatus(2);
     } else {
       setStatus(0);
     }
-    setLoadingState("loaded");
   }, [location]);
-
-  const changeStatus = () => {
-    setLoadingState("not-loaded");
-  };
 
   const home = "-right-44";
   const other = "-right-28";

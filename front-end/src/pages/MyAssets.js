@@ -22,37 +22,35 @@ export const CHECK = React.createContext();
 const MyAssets = () => {
   
   const [loadingState, setLoadingState] = useState("not-loaded");
-  const [load, setLoad] = useState(0);
+  const [loadButtons, setLoadButtons] = useState(0);
 
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
 
   useEffect(() => {
     if (loadingState === "not-loaded") {
-      console.log("Checking Status");
       checkAsset();
     }
   }, [loadingState]);
 
   async function checkAsset() {
-    console.log(Account.toString());
+    console.log("---My Assets---");
+    console.log("Account No.: " + Account.toString());
+
     const assetContract = new ethers.Contract(asset, ASSET.abi, provider);
     const auctionContract = new ethers.Contract(auction, AUCTION.abi, provider);
     const assetbalance = await assetContract.balanceOf(Account.toString());
     const auctionbalance = await auctionContract.auctionBalance(
       Account.toString()
     );
-    console.log("Asset Balance:");
-    console.log(assetbalance.toNumber());
-    console.log("Auction Balance:");
-    console.log(auctionbalance.toNumber());
+    console.log("Asset Balance: " + assetbalance.toNumber());
+    console.log("Auction Balance: " + auctionbalance.toNumber());
 
     // 0 -> no asset and auction owned
     // 1 -> has only asset owned
     // 2 -> has only auction owned
     // 3 -> owns both asset and auction
     let check = 0;
-
     if (assetbalance.toNumber() > 0) {
       check = 1;
     }
@@ -63,9 +61,8 @@ const MyAssets = () => {
         check = 2;
       }
     }
-    console.log("Check:");
-    console.log(check);
-    setLoad(check);
+
+    setLoadButtons(check);
     setLoadingState("loaded");
   }
 
@@ -80,14 +77,14 @@ const MyAssets = () => {
           <Route exact path="/MyAssets">
             <Address address={Account} />
             <div className="flex flex-col mt-10 my-auto mx-auto items-center">
-              {load === 0 ? (
+              {loadButtons === 0 ? (
                 <p className="text-5xl font-semibold pb-10 ">
                   Mint Your First Asset
                 </p>
               ) : null}
               <MintButton />
-              {load === 1 || load === 3 ? <AssetButton /> : null}
-              {load === 2 || load === 3 ? <AuctionButton /> : null}
+              {loadButtons === 1 || loadButtons === 3 ? <AssetButton /> : null}
+              {loadButtons === 2 || loadButtons === 3 ? <AuctionButton /> : null}
             </div>
           </Route>
           <Route path="/MyAssets/Mint">

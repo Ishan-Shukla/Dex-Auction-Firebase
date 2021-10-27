@@ -40,10 +40,11 @@ const Mint = (props) => {
     let contract = new ethers.Contract(asset, ASSET.abi, signer);
     let transaction = await contract.Mint(url);
     let tx = await transaction.wait();
-    console.log(tx);
-    let event = tx.events[0];
-    let value = event.args[2];
-    let tokenId = value.toNumber();
+
+    console.log("---Mint---");
+    console.log("Mint Successful");
+    console.log("Token ID: " + tx.events[0].args[2].toNumber());
+    console.log("Block no.: " + tx.blockNumber);
   }
 
   async function createAsset() {
@@ -64,6 +65,7 @@ const Mint = (props) => {
       name,
       description,
     });
+
     try {
       await MintAsset("Test");
     } catch (error) {
@@ -209,7 +211,3 @@ const Mint = (props) => {
 export default Mint;
 // -32603 nonce error
 // 4001   Transaction denied
-
-// pt-32 min-w-full
-//  w-1/2 border mx-auto pt-20 flex flex-col justify-center pb-12
-// font-semibold p-4 shadow-lg transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none
