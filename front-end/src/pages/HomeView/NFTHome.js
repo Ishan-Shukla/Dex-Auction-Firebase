@@ -73,6 +73,6 @@ export const NFTHome = () => {
     );
   }
   return (
-    <div className="mx-auto text-center mt-40 mb-32 text-4xl font-semibold">No NFT to Display</div>
+    <div className="mx-auto text-center h-screen pt-96 text-4xl font-semibold">No NFT to Display</div>
   );
 };

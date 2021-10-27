@@ -97,20 +97,22 @@ function App() {
   // If everyThing goes well
   return (
     <Router>
-      <MetamaskProvider.Provider value={provider}>  {/* Provides Metamask Provider to other Components */}
+      <MetamaskProvider.Provider value={provider}>
+        {/* Provides Metamask Provider to other Components */}
         <div className="App">
-          <TopBar />  {/* Top Frosted Glass bar with DexAuction Logo */}
-          <Navbar />  {/* Side Floating navigation bar to navigate b/w MyAssets & Marketplace */}
+          <Navbar />{/* Side Floating navigation bar to navigate b/w MyAssets & Marketplace */}
           <div>
             <Switch>
               <Route exact path="/">
-                <Home />  {/* Landing Page */}
+                <Home /> {/* Landing Page */}
               </Route>
               <UserAccount.Provider value={Account}>
                 <Route exact path="/Market">
+                  <TopBar /> {/* Top Frosted Glass bar with DexAuction Logo */}
                   <MarketPlace /> {/* MarketPlace Page */}
                 </Route>
                 <Route exact path="/MyAssets">
+                  <TopBar /> {/* Top Frosted Glass bar with DexAuction Logo */}
                   <MyAssets /> {/* MyAssets page */}
                 </Route>
               </UserAccount.Provider>

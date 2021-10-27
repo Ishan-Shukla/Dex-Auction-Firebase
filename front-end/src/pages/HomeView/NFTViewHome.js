@@ -4,11 +4,12 @@ import { GoBack } from "../../Components/Buttons/GoBack";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import placeHolder from "../../img/PlaceHolder.svg";
+import TopBar from "../../Components/Header/TopBar";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 
-export const NFTsView = () => {
+export const NFTViewHome = () => {
   const [loadingState, setLoadingState] = useState("not-loaded"); // Loading state for main return
   const [NFTs, setNFT] = useState(); // Fetched NFTs details
 
@@ -44,6 +45,7 @@ export const NFTsView = () => {
   if (loadingState === "loaded")
     return (
       <div>
+        <TopBar /> {/* Top Frosted Glass bar with DexAuction Logo */}
         <GoBack url="/" />
         <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
           <div className="w-full flex justify-center h-max p-4 border-r-2">
