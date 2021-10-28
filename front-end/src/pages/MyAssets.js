@@ -43,6 +43,7 @@ const MyAssets = () => {
     const auctionbalance = await auctionContract.auctionBalance(
       Account.toString()
     );
+    
     console.log("Asset Balance: " + assetbalance.toNumber());
     console.log("Auction Balance: " + auctionbalance.toNumber());
 

@@ -62,16 +62,16 @@ export const NFTassetView = (props) => {
 
     const tokenURI = await contract.tokenURI(data.tokenId);
 
-    const organizedData = {
+    const assetNFT = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner.toString(),
       tokenURI,
     };
 
     console.log("---NFT View (MyAssets)---");
-    console.log("Viewing NFT (TokenId): " + organizedData.tokenId);
+    console.log("Viewing NFT (TokenId): " + assetNFT.tokenId);
 
-    setNFTs(organizedData);
+    setNFTs(assetNFT);
     setLoadingState("loaded");
   }
 
@@ -85,12 +85,10 @@ export const NFTassetView = (props) => {
 
   const activateScroll = () => {
     setScroll(true);
-    console.log("Scroll Activated");
   };
 
   const deactivateScroll = () => {
     setScroll(false);
-    console.log("Scroll Deactivated");
   };
 
   const openApproval = () => {
@@ -113,7 +111,6 @@ export const NFTassetView = (props) => {
   };
 
   const incrementDay = () => {
-    // console.log(newTime);
     if (auctionInput.duration === 720) {
       return;
     } else {
@@ -144,11 +141,6 @@ export const NFTassetView = (props) => {
         hours: prevState.hours,
       }));
     }
-    // setTime((prevState) => ({
-    //   total: prevState.total,
-    //   days: prevState.days - 1,
-    //   hours: prevState.hours,
-    // }));
   };
 
   const incrementHour = () => {
@@ -169,7 +161,6 @@ export const NFTassetView = (props) => {
         hours: prevState.hours + 1,
       }));
     }
-    console.log("Hour incremeted");
   };
 
   const decrementHour = () => {
@@ -228,12 +219,11 @@ export const NFTassetView = (props) => {
     const transaction = await contract.Burn(id);
     const tx = await transaction.wait();
 
-    console.log(tx);
     console.log("---Burn---");
     console.log("Burn Successful");
     console.log("Token ID: " + tx.events[0].args[2].toNumber());
     console.log("Block no.: " + tx.blockNumber);
-    
+
     const balance = await contract.balanceOf(Account.toString());
     if (balance.toNumber() === 0) {
       history.push("/MyAssets");
@@ -242,18 +232,22 @@ export const NFTassetView = (props) => {
       history.push("/MyAssets/AssetView");
       props.viewState();
     }
-  };
+  }
 
   async function approveAsset(tokenId) {
     const signer = provider.getSigner();
     let contract = new ethers.Contract(asset, ASSET.abi, signer);
     let transaction = await contract.Approve(tokenId);
     let tx = await transaction.wait();
-  };
+
+    console.log("---Approved---");
+    console.log(
+      "TokenID: " + tx.events[0].args[2].toNumber() + " Approved Successful"
+    );
+  }
 
   async function createAuction(tokenId, price, duration) {
     const signer = provider.getSigner();
-    // console.log(parseInt(duration));
     let contract = new ethers.Contract(auction, AUCTION.abi, signer);
     let transaction = await contract.CreateAuction(
       tokenId,
@@ -261,11 +255,14 @@ export const NFTassetView = (props) => {
       parseInt(duration)
     );
     let tx = await transaction.wait();
-  };
+    
+    console.log("---Auction Created---");
+    console.log("Token ID: " + tx.events[2].args[0].toNumber());
+    console.log("Block no.: " + tx.blockNumber);
+  }
 
   async function approveAndCreate() {
     const { price, duration: total } = auctionInput;
-    console.log(price + "    " + total);
     if (!price || total === 0) {
       if (!price && total === 0) {
         setCheck(3);
@@ -281,7 +278,7 @@ export const NFTassetView = (props) => {
     if ((await contract.getApproved(nfts[index].tokenId)) === auction) {
       setCreateModal(true);
     } else openApproval();
-  };
+  }
 
   if (loadingState === "loaded") {
     return (
@@ -298,7 +295,9 @@ export const NFTassetView = (props) => {
                   <div className="text-5xl font-Hanseif pb-1">
                     #{NFTs.tokenId}
                   </div>
-                  <div className="text-4xl font-Hanseif p-1 place-self-end ml-4">Asset Name</div>
+                  <div className="text-4xl font-Hanseif p-1 place-self-end ml-4">
+                    Asset Name
+                  </div>
                 </div>
                 <div className="p-2">Asset description</div>
                 <div className="flex justify-evenly w-full mt-auto p-4">
@@ -462,8 +461,6 @@ export const NFTassetView = (props) => {
                       >
                         <svg
                           viewBox="0 0 32 32"
-                          class="icon icon-chevron-top"
-                          viewBox="0 0 32 32"
                           aria-hidden="true"
                         >
                           <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
@@ -481,8 +478,6 @@ export const NFTassetView = (props) => {
                         onClick={decrementDay}
                       >
                         <svg
-                          viewBox="0 0 32 32"
-                          class="icon icon-chevron-bottom"
                           viewBox="0 0 32 32"
                           aria-hidden="true"
                         >
@@ -506,8 +501,6 @@ export const NFTassetView = (props) => {
                       >
                         <svg
                           viewBox="0 0 32 32"
-                          class="icon icon-chevron-top"
-                          viewBox="0 0 32 32"
                           aria-hidden="true"
                         >
                           <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
@@ -525,8 +518,6 @@ export const NFTassetView = (props) => {
                         onClick={decrementHour}
                       >
                         <svg
-                          viewBox="0 0 32 32"
-                          class="icon icon-chevron-bottom"
                           viewBox="0 0 32 32"
                           aria-hidden="true"
                         >

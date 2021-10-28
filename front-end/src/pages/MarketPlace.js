@@ -30,7 +30,6 @@ const MarketPlace = () => {
     const Provider = new ethers.providers.JsonRpcProvider();
     let contract = new ethers.Contract(auction, AUCTION.abi, Provider);
     const data = await contract.getAllAuctions();
-    console.log(data);
     contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const auctions = await Promise.all(
       data
@@ -59,10 +58,15 @@ const MarketPlace = () => {
           return asset;
         })
     );
-    console.log(auctions);
+
+    console.log("---MarketPlace---");
+    console.log("NFTs Fetched from Blockchain: " + auctions.length);
+
+
     setAuctions(auctions);
     setLoadingState("loaded");
-  }
+  };
+  
   if (loadingState === "loaded" && onAuctions.length)
     return (
       <Router>

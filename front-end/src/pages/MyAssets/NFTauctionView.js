@@ -51,18 +51,21 @@ export const NFTauctionView = (props) => {
       status: data.auctionStatus.toString(),
       tokenURI,
     };
-    console.log(auctionNFT);
+
+    console.log("---NFT View (Auction MyAssets)---");
+    console.log("Viewing NFT (TokenId): " + auctionNFT.tokenId);
+
     setNFTs(auctionNFT);
+
     if (auctionNFT.startAt === 0) {
       setStatus("Inactive");
     } else {
-      const work = async () => {
+      const getBlockchainTime = async () => {
         const block = await provider.getBlockNumber();
         const received = await provider.getBlock(block);
         return received.timestamp;
       };
-      const time = await work();
-      console.log(time);
+      const time = await getBlockchainTime();
       const auctionPeriod = auctionNFT.startAt + auctionNFT.duration;
       if (time < auctionPeriod) {
         setStatus("Active");
@@ -80,9 +83,12 @@ export const NFTauctionView = (props) => {
     const contract = new ethers.Contract(auction, AUCTION.abi, signer);
     let transaction = await contract.CancelAuction(NFTs.tokenId);
     let tx = await transaction.wait();
-    console.log(tx);
+
+    console.log("---Auction Cancelled---");
+    console.log("Token ID: " + tx.events[2].args[0].toNumber());
+    console.log("Block no.: " + tx.blockNumber);
+    
     const balance = await contract.auctionBalance(Account.toString());
-    console.log(balance.toNumber());
 
     if (balance.toNumber() === 0) {
       history.push("/MyAssets");

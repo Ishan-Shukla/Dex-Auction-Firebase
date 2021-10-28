@@ -8,6 +8,7 @@ import { ethers } from "ethers";
 import { useParams, useHistory } from "react-router";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { formatEther } from "@ethersproject/units";
+import Countdown from "react-countdown";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -21,6 +22,7 @@ export const NFTViewMarketPlace = (props) => {
   });
   const [lock, setLock] = useState(false);
   const [claim, setClaim] = useState(false);
+  const [countdownTime, setCountdownTime] = useState(0);
   const history = useHistory();
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
@@ -44,10 +46,14 @@ export const NFTViewMarketPlace = (props) => {
   async function loadNFTs() {
     const Provider = new ethers.providers.JsonRpcProvider();
     let contract = new ethers.Contract(auction, AUCTION.abi, Provider);
+
     const data = await contract.getAuction(id);
+
     contract = new ethers.Contract(asset, ASSET.abi, Provider);
+
     const URI = await contract.tokenURI(id);
-    const auc = {
+
+    const auctionNFT = {
       tokenId: data.tokenId.toNumber(),
       seller: data.seller.toString(),
       reservePrice: formatEther(data.startingPrice.toString()),
@@ -58,20 +64,33 @@ export const NFTViewMarketPlace = (props) => {
       status: data.auctionStatus.toString(),
       tokenURI: URI,
     };
-    const address = ethers.utils.getAddress(Account.toString());
-    if (isSeller(auc.seller)) {
+
+    if (isSeller(auctionNFT.seller)) {
       setLock(true);
     }
-    const blockno = await provider.getBlockNumber();
-    const block = await provider.getBlock(blockno);
-    console.log(block.timestamp);
-    if (auc.startAt !== 0) {
-      if (auc.startAt + auc.duration < block.timestamp) {
-        setClaim(true);
+
+    const getBlockchainTime = async () => {
+      const block = await provider.getBlockNumber();
+      const received = await provider.getBlock(block);
+      return received.timestamp;
+    };
+    const time = await getBlockchainTime();
+    const auctionPeriod = auctionNFT.startAt + auctionNFT.duration;
+
+    // console.log(time);
+
+    if (auctionNFT.startAt !== 0) {
+      if (auctionPeriod < time) {
+        const address = ethers.utils.getAddress(Account.toString());
+        if (auctionNFT.maxBidder === address) {
+          setClaim(true);
+        }
         setLock(true);
+      } else {
+        setCountdownTime( auctionPeriod - time);
       }
     }
-    setAuction(auc);
+    setAuction(auctionNFT);
     setLoadingState("loaded");
   }
 
@@ -119,13 +138,9 @@ export const NFTViewMarketPlace = (props) => {
                 <div>Owner</div>
                 <div className="pl-4">{NFTonAuction.seller}</div>
               </div>
-              <div className="p-2">
-                Asset description
-              </div>
+              <div className="p-2">Asset description</div>
               {!isSeller(NFTonAuction.seller) ? (
-                <div className="p-2">
-                  Seller- {NFTonAuction.seller}
-                </div>
+                <div className="p-2">Seller- {NFTonAuction.seller}</div>
               ) : null}
               {NFTonAuction.startAt === 0 ? (
                 <div className="p-2">
@@ -133,14 +148,12 @@ export const NFTViewMarketPlace = (props) => {
                 </div>
               ) : (
                 <>
-                  <div className="p-2">
-                    maxBidder- {NFTonAuction.maxBidder}
-                  </div>
+                  <div className="p-2">Bidder- {NFTonAuction.maxBidder}</div>
                   <div className="p-2">
                     Current Price- {NFTonAuction.maxBidPrice} ETH
                   </div>
                   <div className="p-2">
-                    Duration- Left Timer will be here
+                    Time Left- <Countdown date={Date.now() + countdownTime * 1000} className="font-bold" />
                   </div>
                 </>
               )}
