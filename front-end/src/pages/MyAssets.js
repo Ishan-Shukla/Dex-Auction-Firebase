@@ -20,7 +20,6 @@ const auction = process.env.REACT_APP_AUCTION_BASE;
 export const CHECK = React.createContext();
 
 const MyAssets = () => {
-  
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [loadButtons, setLoadButtons] = useState(0);
 
@@ -43,7 +42,7 @@ const MyAssets = () => {
     const auctionbalance = await auctionContract.auctionBalance(
       Account.toString()
     );
-    
+
     console.log("Asset Balance: " + assetbalance.toNumber());
     console.log("Auction Balance: " + auctionbalance.toNumber());
 
@@ -77,22 +76,28 @@ const MyAssets = () => {
         <Switch>
           <Route exact path="/MyAssets">
             <Address address={Account} />
-            <div className="flex flex-col mt-10 my-auto mx-auto items-center">
-              {loadButtons === 0 ? (
-                <p className="text-5xl font-semibold pb-10 ">
-                  Mint Your First Asset
-                </p>
-              ) : null}
-              <MintButton />
-              {loadButtons === 1 || loadButtons === 3 ? <AssetButton /> : null}
-              {loadButtons === 2 || loadButtons === 3 ? <AuctionButton /> : null}
+            <div className="flex items-center h-96">
+              <div className="flex flex-col mt-24 my-auto mx-auto items-center">
+                {loadButtons === 0 ? (
+                  <p className="text-5xl font-semibold pb-10 ">
+                    Mint Your First Asset
+                  </p>
+                ) : null}
+                <MintButton />
+                {loadButtons === 1 || loadButtons === 3 ? (
+                  <AssetButton />
+                ) : null}
+                {loadButtons === 2 || loadButtons === 3 ? (
+                  <AuctionButton />
+                ) : null}
+              </div>
             </div>
           </Route>
           <Route path="/MyAssets/Mint">
             <Mint status={setStatus} />
           </Route>
           <Route path="/MyAssets/AssetView">
-              <AssetView status={setStatus} />
+            <AssetView status={setStatus} />
           </Route>
           <Route path="/MyAssets/AuctionView">
             <AuctionView status={setStatus} />

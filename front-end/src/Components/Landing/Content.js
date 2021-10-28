@@ -4,7 +4,7 @@ import Name from "./Name";
 
 function Content() {
   return (
-    <div className="relative flex flex-row">
+    <div className="min-h-screen flex">
       <Name/>
       <EthereumLogo/>
     </div>

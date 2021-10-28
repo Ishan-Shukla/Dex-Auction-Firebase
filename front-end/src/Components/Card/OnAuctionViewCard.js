@@ -1,3 +1,4 @@
+import { formatEther } from "@ethersproject/units";
 import React from "react";
 import placeHolder from "../../img/PlaceHolder.svg"
 
@@ -12,27 +13,10 @@ export const OnAuctionViewCard = (props) => {
       <div className="z-20 h-2/6 bg-white">
         <div className="flex flex-col h-full w-full justify-evenly">
           <div className="pl-2">Asset Name</div>
-          <div className="pl-2">Reserve Price-{props.reservePrice}</div>
+          <div className="pl-2">Reserve Price-{formatEther(props.reservePrice)} ETH</div>
         </div>
       </div>
     </div>
   );
 };
 export default OnAuctionViewCard;
-// <div className="flex flex-col overflow-hidden shadow-lg rounded-lg h-96 h- w-72 mt-8 ml-auto mr-auto cursor-pointer">
-//   <div className="border h-4/5">
-//     <p>NFT Display Here!</p>
-//   </div>
-//   <div className="border h-1/5">
-//     TokenId- {props.tokenId} <br />
-//     {/* Seller-{props.seller} <br /> */}
-//     Reserve Price-{props.reservePrice} <br />
-//     {/* maxBidPrice-{props.maxBidPrice} <br /> */}
-//     {/* maxBidder-{props.maxBidder} <br /> */}
-//     {/* duration-{props.duration} <br /> */}
-//     {/* startAt-{props.startAt} <br /> */}
-//     {/* status-{props.status} <br /> */}
-//     {/* tokenURI-{props.tokenURI} <br /> */}
-//     {/* index-{props.index} <br /> */}
-//   </div>
-// </div>
