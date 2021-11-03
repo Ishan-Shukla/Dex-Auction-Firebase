@@ -7,6 +7,7 @@ import { MetamaskProvider } from "../../App";
 import ViewCard from "../../Components/Card/ViewCard";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import { NFTassetView } from "./NFTassetView";
+import axios from "axios";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -46,10 +47,14 @@ export const AssetView = (props) => {
     let assets = await Promise.all(
       finalData.map(async (NFT) => {
         const tokenURI = await contract.tokenURI(NFT.tokenId);
+        const meta = await axios.get(tokenURI);
+
         let asset = {
           tokenId: NFT.tokenId.toNumber(),
           owner: NFT.owner.toString(),
-          tokenURI,
+          image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+          name: meta.data.name,
+          description: meta.data.description,
           index: counter++,
         };
         return asset;
@@ -64,18 +69,13 @@ export const AssetView = (props) => {
         <Switch>
           <Route exact path="/MyAssets/AssetView">
             <div className="flex pt-32 justify-center">
-              <GoBack change={changeStatus} url="/MyAssets"/>
+              <GoBack change={changeStatus} url="/MyAssets" />
               <div className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                   {NFTs.map((nft) => (
-                    <div
-                      key={nft.tokenId}
-                    >
-                      <Link
-                        to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}
-                        
-                      >
-                        <ViewCard tokenId={nft.tokenId}/>
+                    <div key={nft.tokenId}>
+                      <Link to={`/MyAssets/Asset/${nft.tokenId}/${nft.index}`}>
+                        <ViewCard tokenId={nft.tokenId} name={nft.name} image={nft.image} />
                       </Link>
                     </div>
                   ))}
@@ -85,7 +85,10 @@ export const AssetView = (props) => {
           </Route>
           <NFT.Provider value={NFTs}>
             <Route path="/MyAssets/Asset/:id/:index">
-              <NFTassetView status={changeStatus} viewState={()=>setLoadingState("not-loaded")} />
+              <NFTassetView
+                status={changeStatus}
+                viewState={() => setLoadingState("not-loaded")}
+              />
             </Route>
           </NFT.Provider>
         </Switch>

@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
-import placeHolder from "../../img/PlaceHolder.svg";
 import TopBar from "../../Components/Header/TopBar";
 import axios from "axios";
 
@@ -28,9 +27,9 @@ export const NFTViewHome = () => {
     const Provider = new ethers.providers.JsonRpcProvider(); // JsonRpcProvider
     const contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const data = await contract.getAsset(id); // Fetched data
-    const URI = await contract.tokenURI(id); // NFT ipfs URI
-    console.log(URI);
-    const meta = await axios.get(URI);
+    const tokenURI = await contract.tokenURI(id); // NFT ipfs URI
+    console.log(tokenURI);
+    const meta = await axios.get(tokenURI);
     console.log(meta);
     // Organized data
     const nft = {
@@ -38,7 +37,7 @@ export const NFTViewHome = () => {
       owner: data.owner,
       image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
       name: meta.data.name,
-      description: meta.data.description,
+      description: meta.data.description
     };
     console.log("---NFT View (Home)---");
     console.log("Viewing NFT (TokenId): " + nft.tokenId);

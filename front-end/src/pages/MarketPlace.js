@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { ethers } from "ethers";
 import OnAuctionViewCard from "../Components/Card/OnAuctionViewCard";
 import NFTViewMarketPlace from "./Market/NFTViewMarketPlace";
+import axios from "axios";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -44,6 +45,7 @@ const MarketPlace = () => {
         )
         .map(async (NFT) => {
           const tokenURI = await contract.tokenURI(NFT.tokenId);
+          const meta = await axios.get(tokenURI);
           let asset = {
             tokenId: NFT.tokenId.toNumber(),
             seller: NFT.seller.toString(),
@@ -53,7 +55,9 @@ const MarketPlace = () => {
             duration: NFT.duration.toNumber(),
             startAt: NFT.startAt.toNumber(),
             status: NFT.auctionStatus.toString(),
-            tokenURI,
+            image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+            name: meta.data.name,
+            description: meta.data.description
           };
           return asset;
         })
@@ -62,11 +66,10 @@ const MarketPlace = () => {
     console.log("---MarketPlace---");
     console.log("NFTs Fetched from Blockchain: " + auctions.length);
 
-
     setAuctions(auctions);
     setLoadingState("loaded");
-  };
-  
+  }
+
   if (loadingState === "loaded" && onAuctions.length)
     return (
       <Router>
@@ -75,21 +78,16 @@ const MarketPlace = () => {
             <div className="p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                 {onAuctions.map((nft) => (
-                  <div
-                    key={nft.tokenId}
-                  >
+                  <div key={nft.tokenId}>
                     <Link to={`/Market/Auction/${nft.tokenId}`}>
                       <OnAuctionViewCard
                         tokenId={nft.tokenId}
-                        seller={nft.seller}
                         reservePrice={nft.reservePrice}
                         maxBidPrice={nft.maxBidPrice}
-                        maxBidder={nft.maxBidder}
                         duration={nft.duration}
                         startAt={nft.startAt}
-                        status={nft.status}
-                        tokenURI={nft.tokenURI}
-                        index={nft.index}
+                        image={nft.image}
+                        name={nft.name}
                       />
                     </Link>
                   </div>
@@ -104,15 +102,18 @@ const MarketPlace = () => {
       </Router>
     );
 
-    if (!onAuctions.length) {
-      return (
-        <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">No Assets on Auction</div>
-      );
-    }
+  if (!onAuctions.length) {
     return (
-      <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">loading</div>
+      <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">
+        No Assets on Auction
+      </div>
     );
+  }
+  return (
+    <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">
+      loading
+    </div>
+  );
 };
 
 export default MarketPlace;
-

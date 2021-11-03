@@ -9,6 +9,7 @@ import { useParams, useHistory } from "react-router";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { formatEther } from "@ethersproject/units";
 import Countdown from "react-countdown";
+import axios from "axios";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -51,7 +52,8 @@ export const NFTViewMarketPlace = (props) => {
 
     contract = new ethers.Contract(asset, ASSET.abi, Provider);
 
-    const URI = await contract.tokenURI(id);
+    const tokenURI = await contract.tokenURI(id);
+    const meta = await axios.get(tokenURI);
 
     const auctionNFT = {
       tokenId: data.tokenId.toNumber(),
@@ -62,7 +64,9 @@ export const NFTViewMarketPlace = (props) => {
       duration: data.duration.toNumber(),
       startAt: data.startAt.toNumber(),
       status: data.auctionStatus.toString(),
-      tokenURI: URI,
+      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      name: meta.data.name,
+      description: meta.data.description,
     };
 
     if (isSeller(auctionNFT.seller)) {
@@ -87,7 +91,7 @@ export const NFTViewMarketPlace = (props) => {
         }
         setLock(true);
       } else {
-        setCountdownTime( auctionPeriod - time);
+        setCountdownTime(auctionPeriod - time);
       }
     }
     setAuction(auctionNFT);
@@ -123,22 +127,23 @@ export const NFTViewMarketPlace = (props) => {
     return (
       <div>
         <GoBack change={changeState} url="/Market" />
-        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+        <div className="flex pt-36 pl-32 pr-32 pb-14 h-screen justify-center">
           <div className="w-full flex justify-center h-max p-4 border-r-2">
-            <img src={placeHolder} alt="PlaceHolder"></img>
+            <img src={NFTonAuction.image} alt="PlaceHolder"></img>
           </div>
           <div className="p-4 w-full cursor-default">
             <div className="flex w-full h-full flex-col font-semibold">
               <div className="flex border-b-2">
-                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                <div className="text-5xl font-Hanseif pb-1 mr-5">
                   #{NFTonAuction.tokenId}
                 </div>
+                <div className="text-5xl font-Hanseif pb-1 flex-1">{NFTonAuction.name}</div>
               </div>
+              <div className="p-2">"{NFTonAuction.description}"</div>
               <div className="p-2">
                 <div>Owner</div>
                 <div className="pl-4">{NFTonAuction.seller}</div>
               </div>
-              <div className="p-2">Asset description</div>
               {!isSeller(NFTonAuction.seller) ? (
                 <div className="p-2">Seller- {NFTonAuction.seller}</div>
               ) : null}
@@ -153,7 +158,11 @@ export const NFTViewMarketPlace = (props) => {
                     Current Price- {NFTonAuction.maxBidPrice} ETH
                   </div>
                   <div className="p-2">
-                    Time Left- <Countdown date={Date.now() + countdownTime * 1000} className="font-bold" />
+                    Time Left-{" "}
+                    <Countdown
+                      date={Date.now() + countdownTime * 1000}
+                      className="font-bold"
+                    />
                   </div>
                 </>
               )}

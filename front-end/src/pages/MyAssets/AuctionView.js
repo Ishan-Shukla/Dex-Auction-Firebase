@@ -8,6 +8,7 @@ import { MetamaskProvider } from "../../App";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import { OnAuctionViewCard } from "../../Components/Card/OnAuctionViewCard";
 import { NFTauctionView } from "./NFTauctionView";
+import axios from "axios";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -46,6 +47,7 @@ export const AuctionView = (props) => {
         )
         .map(async (NFT) => {
           const tokenURI = await contract.tokenURI(NFT.tokenId);
+          const meta = await axios.get(tokenURI);
           let asset = {
             tokenId: NFT.tokenId.toNumber(),
             seller: NFT.seller.toString(),
@@ -55,7 +57,9 @@ export const AuctionView = (props) => {
             duration: NFT.duration.toNumber(),
             startAt: NFT.startAt.toNumber(),
             status: NFT.auctionStatus.toString(),
-            tokenURI
+            image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+            name: meta.data.name,
+            description: meta.data.description
           };
           return asset;
         })
@@ -75,20 +79,15 @@ export const AuctionView = (props) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-20 pt-4">
                   {NFTs.map((nft) => (
                     <div key={nft.tokenId}>
-                      <Link
-                        to={`/MyAssets/onAuction/${nft.tokenId}`}
-                        replace
-                      >
+                      <Link to={`/MyAssets/onAuction/${nft.tokenId}`} replace>
                         <OnAuctionViewCard
                           tokenId={nft.tokenId}
-                          seller={nft.seller}
                           reservePrice={nft.reservePrice}
                           maxBidPrice={nft.maxBidPrice}
-                          maxBidder={nft.maxBidder}
                           duration={nft.duration}
                           startAt={nft.startAt}
-                          status={nft.status}
-                          tokenURI={nft.tokenURI}
+                          image={nft.image}
+                          name={nft.name}
                         />
                       </Link>
                     </div>

@@ -10,6 +10,7 @@ import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { Dialog, Transition } from "@headlessui/react";
+import axios from "axios";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -61,11 +62,14 @@ export const NFTassetView = (props) => {
     const data = await contract.getAsset(id);
 
     const tokenURI = await contract.tokenURI(data.tokenId);
+    const meta = await axios.get(tokenURI);
 
     const assetNFT = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner.toString(),
-      tokenURI,
+      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      name: meta.data.name,
+      description: meta.data.description
     };
 
     console.log("---NFT View (MyAssets)---");
@@ -285,9 +289,9 @@ export const NFTassetView = (props) => {
       <Router>
         <GoBack change={() => props.viewState()} url={"/MyAssets/AssetView"} />
         <Route exact path={`/MyAssets/Asset/${id}/${index}`}>
-          <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+          <div className="flex pt-36 pl-32 pr-32 pb-14 h-screen justify-center">
             <div className="w-full flex justify-center h-max p-4 border-r-2">
-              <img src={placeHolder} alt="PlaceHolder"></img>
+              <img src={NFTs.image} alt="PlaceHolder"></img>
             </div>
             <div className="p-4 w-full cursor-default">
               <div className="flex w-full h-full flex-col font-semibold">
@@ -296,10 +300,10 @@ export const NFTassetView = (props) => {
                     #{NFTs.tokenId}
                   </div>
                   <div className="text-4xl font-Hanseif p-1 place-self-end ml-4">
-                    Asset Name
+                    {NFTs.name}
                   </div>
                 </div>
-                <div className="p-2">Asset description</div>
+                <div className="p-2">{NFTs.description}</div>
                 <div className="flex justify-evenly w-full mt-auto p-4">
                   <button
                     onClick={openBurn}

@@ -10,6 +10,7 @@ import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { formatEther } from "@ethersproject/units";
+import axios from "axios";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -40,6 +41,7 @@ export const NFTauctionView = (props) => {
     const data = await contract.getAuction(id);
     contract = new ethers.Contract(asset, ASSET.abi, signer);
     const tokenURI = await contract.tokenURI(data.tokenId);
+    const meta = await axios.get(tokenURI);
     let auctionNFT = {
       tokenId: data.tokenId.toNumber(),
       seller: data.seller.toString(),
@@ -49,7 +51,9 @@ export const NFTauctionView = (props) => {
       duration: data.duration.toNumber(),
       startAt: data.startAt.toNumber(),
       status: data.auctionStatus.toString(),
-      tokenURI,
+      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      name: meta.data.name,
+      description: meta.data.description,
     };
 
     console.log("---NFT View (Auction MyAssets)---");
@@ -87,7 +91,7 @@ export const NFTauctionView = (props) => {
     console.log("---Auction Cancelled---");
     console.log("Token ID: " + tx.events[2].args[0].toNumber());
     console.log("Block no.: " + tx.blockNumber);
-    
+
     const balance = await contract.auctionBalance(Account.toString());
 
     if (balance.toNumber() === 0) {
@@ -125,20 +129,22 @@ export const NFTauctionView = (props) => {
     return (
       <Router>
         <GoBack url="/MyAssets/AuctionView" change={changeStatus} />
-        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
+        <div className="flex pt-36 pl-32 pr-32 pb-14 h-screen justify-center">
           <div className="w-full flex justify-center h-max p-4 border-r-2">
-            <img src={placeHolder} alt="PlaceHolder"></img>
+            <img src={NFTs.image} alt="PlaceHolder"></img>
           </div>
           <div className="p-4 w-full cursor-default">
             <div className="flex w-full h-full flex-col font-semibold">
               <div className="flex border-b-2">
-                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                <div className="text-5xl font-Hanseif pb-1 mr-5">
                   #{NFTs.tokenId}
                 </div>
+                <div className="text-5xl font-Hanseif pb-1 flex-1">{NFTs.name}</div>
                 <div className="flex-none place-self-end text-blue-400 animate-pulse">
                   &#8226;{status}
                 </div>
               </div>
+
               <div className="p-2">
                 <div>Owner</div>
                 <div className="pl-4">{NFTs.seller}</div>
