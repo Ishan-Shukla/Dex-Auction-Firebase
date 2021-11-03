@@ -1,34 +1,90 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useRef } from "react";
 import { ethers } from "ethers";
+import { useHistory } from "react-router";
 import { Dialog, Transition } from "@headlessui/react";
 import { MetamaskProvider } from "../../App";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
-import { useHistory } from "react-router";
 import { GoBack } from "../../Components/Buttons/GoBack";
+import warning from "../../img/warning.svg";
+import { create as ipfsHttpClient } from "ipfs-http-client";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
 
 const Mint = (props) => {
   let history = useHistory();
-  const [check, setCheck] = useState(0);
+
+  const [isNameFilled, checkName] = useState(true);
+  const [isDescriptionFilled, checkDescription] = useState(true);
+  const [isFileSelected, checkFile] = useState(true);
+  const [assetInput, updateAssetInput] = useState({
+    name: "",
+    description: "",
+  });
+  const [file, setFile] = useState("");
+  const [fileError, setFileError] = useState("");
+
   const [isOpen, setModal] = useState(false);
   const [errorcode, setErrorcode] = useState(0);
+  const refFileInput = useRef(null);
+  const provider = useContext(MetamaskProvider);
+  // For local ipfs node
+  const client = ipfsHttpClient("/ip4/127.0.0.1/tcp/5001/");
+
+  const Bvalid = "border-gray-200 placeholder-gray-400";
+  const Binvalid = "border-red-600 placeholder-red-600";
+  const Ovalid = "ring-black";
+  const Oinvalid = "ring-red-400";
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes";
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  };
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    var reader = new FileReader();
+    // Read the cotents of Image File.
+    reader.readAsDataURL(file);
+    reader.onload = async function (e) {
+      //Initiate the JavaScript Image object.
+      var image = new Image();
+      //Set the Base64 string return from FileReader as source.
+      image.src = e.target.result;
+      image.onload = () => {
+        setFile(file);
+        checkFile(true);
+        setFileError("");
+        console.log("Loaded Successfully");
+        console.log("Height: " + image.height);
+        console.log("Width: " + image.width);
+        console.log("File Name: " + file.name);
+        console.log("File Size: " + formatBytes(file.size));
+      };
+      image.onerror = () => {
+        console.log("Error Occurred on Loading");
+        setFile("");
+        setFileError("Image File Don't contain Image");
+      };
+    };
+  };
 
   const changeStatus = () => {
     props.status();
   };
 
-  const [assetInput, updateAssetInput] = useState({
-    name: "",
-    description: "",
-  });
-
-  const provider = useContext(MetamaskProvider);
-
   const closeModal = () => {
     setModal(false);
   };
+
   const openModal = () => {
     setModal(true);
   };
@@ -49,25 +105,54 @@ const Mint = (props) => {
 
   async function createAsset() {
     const { name, description } = assetInput;
-    if (!name || !description) {
-      if (!name && !description) {
-        setCheck(3);
-      } else if (!name) {
-        setCheck(1);
-      } else {
-        setCheck(2);
-      }
+    let temp = false;
+    if (!name) {
+      temp = true;
+      checkName(false);
+    }
+    if (!description) {
+      temp = true;
+      checkDescription(false);
+    }
+    if (!file) {
+      temp = true;
+      checkFile(false);
+    }
+    if (temp) {
       return;
     }
-
-    /* first, upload to IPFS */
-    const data = JSON.stringify({
-      name,
-      description,
-    });
-
+    let URI;
     try {
-      await MintAsset("Test");
+      console.log(file);
+      console.log();
+
+      // upload NFT to ipfs
+      const nftAdded = await client.add(file);
+
+      const NFTHash = nftAdded.path;
+      console.log(nftAdded);
+      // Prepare to upload all data to ipfs
+      const data = JSON.stringify({
+        name,
+        description,
+        NFTHash,
+      });
+      console.log(data);
+      // upload data to ipfs
+      const dataAdded = await client.add(data);
+      URI = dataAdded.path;
+      console.log(dataAdded);
+      // For local IPFS node
+      // const url = `http://127.0.0.1:8080/ipfs/${added.path}`;
+      // console.log(added);
+      // console.log(`Added Path: ${added.path}`);
+      // console.log(`Generated url = ${url}`);
+    } catch (error) {
+      console.log("Error uploading file: ", error);
+      return;
+    }
+    try {
+      await MintAsset(URI);
     } catch (error) {
       console.log(error);
       setErrorcode(error.code);
@@ -78,29 +163,24 @@ const Mint = (props) => {
     history.push("/MyAssets");
   }
 
-  const Bvalid = "border-gray-200 placeholder-gray-400";
-  const Binvalid = "border-red-600 placeholder-red-600";
-  const Ovalid = "ring-black";
-  const Oinvalid = "ring-red-400";
-
   return (
     <>
-      <div className=" flex pl-auto border h-screen pr-auto justify-center">
+      <div className=" flex pl-auto border min-h-screen pr-auto justify-center">
         <GoBack url="/MyAssets" change={changeStatus} />
-        <div className="flex w-1/2 mt-36 p-4 flex-col font-semibold ">
+        <div className="flex w-1/2 mt-36 p-4 flex-col ">
           <input
             placeholder="Asset Name"
             className={`mt-8 border ${
-              check === 0 || check === 2 ? Bvalid : Binvalid
+              isNameFilled ? Bvalid : Binvalid
             } rounded p-4 placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
-              check === 1 || check === 3 ? Oinvalid : Ovalid
+              isNameFilled ? Ovalid : Oinvalid
             }`}
             onChange={(e) => {
               if (assetInput.name.length === 1 && e.nativeEvent.data === null) {
-                setCheck(check === 2 ? 3 : 1);
+                checkName(false);
               }
               if (!assetInput.name) {
-                setCheck(check === 3 ? 2 : 0);
+                checkName(true);
               }
               updateAssetInput({ ...assetInput, name: e.target.value });
             }}
@@ -108,26 +188,53 @@ const Mint = (props) => {
           <textarea
             placeholder="Asset Description"
             className={`mt-2 border ${
-              check === 0 || check === 1 ? Bvalid : Binvalid
+              isDescriptionFilled ? Bvalid : Binvalid
             } rounded p-4 resize-none h-52 overflow-y-auto placeholder-opacity-100 focus:placeholder-opacity-70 focus:border-opacity-0 focus:outline-none focus:ring-2 focus:${
-              check === 2 || check === 3 ? Oinvalid : Ovalid
+              isDescriptionFilled ? Ovalid : Oinvalid
             }`}
             onChange={(e) => {
               if (
                 assetInput.description.length === 1 &&
                 e.nativeEvent.data === null
               ) {
-                setCheck(check === 1 ? 3 : 2);
+                checkDescription(false);
               }
               if (!assetInput.description) {
-                setCheck(check === 3 ? 1 : 0);
+                checkDescription(true);
               }
               updateAssetInput({ ...assetInput, description: e.target.value });
             }}
           />
+          <div
+            className={`mt-2 relative border rounded p-4 h-28 mb-3 ${
+              isFileSelected ? "border-gray-200" : "border-red-600"
+            } ${
+              isFileSelected ? "text-gray-400" : "text-red-500"
+            } text-center cursor-pointer`}
+            onClick={() => {
+              refFileInput.current.click();
+            }}
+          >
+            {!file
+              ? "Click to Select file"
+              : `${file.name} - ${formatBytes(file.size)}`}
+            {!fileError ? null : (
+              <div className="absolute opacity-80 flex bottom-2 right-2 animate-pulse">
+                <img className="h-4 self-end" src={warning} alt="Warning" />
+                <div className="ml-1 text-xs">{fileError}</div>
+              </div>
+            )}
+          </div>
+          <input
+            type="file"
+            onChange={handleFile}
+            ref={refFileInput}
+            accept="image/*"
+            className="hidden"
+          />
           <button
             onClick={createAsset}
-            className="p-4 mt-auto mb-20 transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+            className="p-4 mt-auto mb-20 font-semibold transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
           >
             Create Digital Asset
           </button>
@@ -211,3 +318,31 @@ const Mint = (props) => {
 export default Mint;
 // -32603 nonce error
 // 4001   Transaction denied
+
+// <div
+// {...getRootProps()}
+// className={`mt-2 relative border rounded p-4 h-32 mb-3 ${
+//   isFileSelected ? "border-gray-200" : "border-red-600"
+// } ${
+//   isFileSelected ? "text-gray-400" : "text-red-500"
+// } text-center cursor-pointer`}
+// >
+// <input {...getInputProps()} />
+// <input type="file" onChange={onChange} />
+
+// {isDragActive ? (
+//   <p>Drop the files here ...</p>
+// ) : (
+//   `${
+//     !file
+//       ? "Drag 'n' Drop some file here, or click to select file"
+//       : `${file.path} - ${formatBytes(file.size)}`
+//   }`
+// )}
+// {!fileError ? null : (
+//   <div className="absolute opacity-80 flex bottom-2 right-2 animate-pulse">
+//     <img className="h-4 self-end" src={warning} alt="Warning" />
+//     <div className="ml-1 text-xs">{fileError}</div>
+//   </div>
+// )}
+// </div>

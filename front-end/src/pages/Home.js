@@ -4,6 +4,7 @@ import Content from "../Components/Landing/Content";
 import { NFTViewHome } from "./HomeView/NFTViewHome";
 import { NFTHome } from "./HomeView/NFTHome";
 import TopBar from "../Components/Header/TopBar";
+import TestWorking from "../Components/practice/TestWorking";
 
 const Home = () => {
   return (

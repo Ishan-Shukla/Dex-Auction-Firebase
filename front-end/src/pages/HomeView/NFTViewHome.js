@@ -5,6 +5,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import placeHolder from "../../img/PlaceHolder.svg";
 import TopBar from "../../Components/Header/TopBar";
+import axios from "axios";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -28,12 +29,16 @@ export const NFTViewHome = () => {
     const contract = new ethers.Contract(asset, ASSET.abi, Provider);
     const data = await contract.getAsset(id); // Fetched data
     const URI = await contract.tokenURI(id); // NFT ipfs URI
-
+    console.log(URI);
+    const meta = await axios.get(URI);
+    console.log(meta);
     // Organized data
     const nft = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner,
-      URI,
+      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      name: meta.data.name,
+      description: meta.data.description,
     };
     console.log("---NFT View (Home)---");
     console.log("Viewing NFT (TokenId): " + nft.tokenId);
@@ -47,9 +52,9 @@ export const NFTViewHome = () => {
       <div>
         <TopBar /> {/* Top Frosted Glass bar with DexAuction Logo */}
         <GoBack url="/" />
-        <div className="flex pt-36 pl-32 pr-32 pb-14 min-h-screen justify-center">
-          <div className="w-full flex justify-center h-max p-4 border-r-2">
-            <img src={placeHolder} alt="PlaceHolder"></img>
+        <div className="flex pt-36 pl-32 pr-32 pb-14 h-screen justify-center">
+          <div className="w-full flex justify-center p-4 border-r-2">
+            <img src={NFTs.image} alt="NFTimage" className="" ></img>
           </div>
           <div className="p-4 w-full cursor-default">
             <div className="flex w-full h-full flex-col font-semibold">
@@ -58,12 +63,12 @@ export const NFTViewHome = () => {
                   #{NFTs.tokenId}
                 </div>
               </div>
-              <div className="p-2 mt-4 text-3xl font-Hanseif">Asset Name</div>
+              <div className="p-2 mt-4 text-3xl font-Hanseif">{NFTs.name}</div>
+              <div className="p-2">{NFTs.description}</div>
               <div className="p-2">
                 <div>Owner</div>
                 <div className="pl-4">{NFTs.owner}</div>
               </div>
-              <div className="p-2">Asset description</div>
             </div>
           </div>
         </div>
