@@ -6,7 +6,6 @@ import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
 import { ethers } from "ethers";
 import { useParams, useHistory } from "react-router";
-import placeHolder from "../../img/PlaceHolder.svg";
 import { formatEther } from "@ethersproject/units";
 import Countdown from "react-countdown";
 import axios from "axios";
@@ -158,7 +157,7 @@ export const NFTViewMarketPlace = (props) => {
                     Current Price- {NFTonAuction.maxBidPrice} ETH
                   </div>
                   <div className="p-2">
-                    Time Left-{" "}
+                    Time Left-
                     <Countdown
                       date={Date.now() + countdownTime * 1000}
                       className="font-bold"

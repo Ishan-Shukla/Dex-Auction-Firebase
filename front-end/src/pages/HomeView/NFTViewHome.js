@@ -37,7 +37,7 @@ export const NFTViewHome = () => {
       owner: data.owner,
       image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
       name: meta.data.name,
-      description: meta.data.description
+      description: meta.data.description,
     };
     console.log("---NFT View (Home)---");
     console.log("Viewing NFT (TokenId): " + nft.tokenId);
@@ -53,17 +53,19 @@ export const NFTViewHome = () => {
         <GoBack url="/" />
         <div className="flex pt-36 pl-32 pr-32 pb-14 h-screen justify-center">
           <div className="w-full flex justify-center p-4 border-r-2">
-            <img src={NFTs.image} alt="NFTimage" className="" ></img>
+            <img src={NFTs.image} alt="NFTimage" className=""></img>
           </div>
           <div className="p-4 w-full cursor-default">
             <div className="flex w-full h-full flex-col font-semibold">
               <div className="flex border-b-2">
-                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                <div className="text-5xl font-Hanseif pb-1">
                   #{NFTs.tokenId}
                 </div>
+                <div className="text-4xl font-Hanseif p-1 place-self-end ml-4">
+                  {NFTs.name}
+                </div>
               </div>
-              <div className="p-2 mt-4 text-3xl font-Hanseif">{NFTs.name}</div>
-              <div className="p-2">{NFTs.description}</div>
+              <div className="p-2">"{NFTs.description}"</div>
               <div className="p-2">
                 <div>Owner</div>
                 <div className="pl-4">{NFTs.owner}</div>

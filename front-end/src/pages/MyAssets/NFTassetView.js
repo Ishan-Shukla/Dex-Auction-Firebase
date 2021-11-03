@@ -303,7 +303,7 @@ export const NFTassetView = (props) => {
                     {NFTs.name}
                   </div>
                 </div>
-                <div className="p-2">{NFTs.description}</div>
+                <div className="p-2">"{NFTs.description}"</div>
                 <div className="flex justify-evenly w-full mt-auto p-4">
                   <button
                     onClick={openBurn}
