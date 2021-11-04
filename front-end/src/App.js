@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import MyAssets from "./pages/MyAssets";
 import MarketPlace from "./pages/MarketPlace";
 import { useHistory } from "react-router";
-
+import loading from "./img/Loading.svg"
 // Context for
 // User Account and Metamask Provider
 export const MetamaskProvider = React.createContext();
@@ -51,6 +51,11 @@ function App() {
 
     console.log("📡📡📡 Connected To Web3 📡📡📡");
 
+    if (parseInt(web3.chainId) !== 1337) {
+      console.log(`Wrong ChainId: ${parseInt(web3.chainId)}`);
+      setchainLock(true);
+    }
+
     // Subscribe to accounts change
     web3.on("accountsChanged", (accounts) => {
       console.log("Account Changed From: " + Account);
@@ -61,7 +66,6 @@ function App() {
 
     // Subscribe to chainId change
     web3.on("chainChanged", (chainId) => {
-      console.log(parseInt(chainId));
       if (parseInt(chainId) !== 1337) {
         console.log("Wrong ChainId: " + chainId);
         if (!chainLock) {
@@ -72,11 +76,6 @@ function App() {
         history.replace("/");
         setLoadingState("not-loaded");
       }
-    });
-
-    // Subscribe to disconect
-    web3.on("disconnect", (err) => {
-      console.log(err);
     });
   };
 
@@ -91,7 +90,9 @@ function App() {
 
   // if not connected to chainId other than 1337
   if (chainLock) {
-    return <h1>Connected to wrong Chain</h1>;
+    return(
+      <div className="min-h-screen w-full flex items-center justify-center" ><img src={loading} alt="Loading" className="h-20"/></div>
+    );
   }
 
   // If everyThing goes well
@@ -100,7 +101,8 @@ function App() {
       <MetamaskProvider.Provider value={provider}>
         {/* Provides Metamask Provider to other Components */}
         <div className="App">
-          <Navbar />{/* Side Floating navigation bar to navigate b/w MyAssets & Marketplace */}
+          <Navbar />
+          {/* Side Floating navigation bar to navigate b/w MyAssets & Marketplace */}
           <div>
             <Switch>
               <Route exact path="/">

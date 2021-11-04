@@ -316,33 +316,3 @@ const Mint = (props) => {
 };
 
 export default Mint;
-// -32603 nonce error
-// 4001   Transaction denied
-
-// <div
-// {...getRootProps()}
-// className={`mt-2 relative border rounded p-4 h-32 mb-3 ${
-//   isFileSelected ? "border-gray-200" : "border-red-600"
-// } ${
-//   isFileSelected ? "text-gray-400" : "text-red-500"
-// } text-center cursor-pointer`}
-// >
-// <input {...getInputProps()} />
-// <input type="file" onChange={onChange} />
-
-// {isDragActive ? (
-//   <p>Drop the files here ...</p>
-// ) : (
-//   `${
-//     !file
-//       ? "Drag 'n' Drop some file here, or click to select file"
-//       : `${file.path} - ${formatBytes(file.size)}`
-//   }`
-// )}
-// {!fileError ? null : (
-//   <div className="absolute opacity-80 flex bottom-2 right-2 animate-pulse">
-//     <img className="h-4 self-end" src={warning} alt="Warning" />
-//     <div className="ml-1 text-xs">{fileError}</div>
-//   </div>
-// )}
-// </div>

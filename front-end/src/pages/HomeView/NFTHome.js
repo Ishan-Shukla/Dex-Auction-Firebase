@@ -15,9 +15,18 @@ export const NFTHome = () => {
 
   // useEffect + loadingState
   useEffect(() => {
+    let continueLoading = true;
     if (loadingState === "not-loaded") {
-      loadNFTs();
+      loadNFTs().then((assets) => {
+        if (continueLoading) {
+          setNFTs(assets);
+          setLoadingState("loaded");
+        }
+      });
     }
+    return () => {
+      continueLoading = false;
+    };
   }, [loadingState]);
 
   // Fetch NFTs from Blockchain
@@ -50,9 +59,7 @@ export const NFTHome = () => {
 
     console.log("---HOME---");
     console.log("NFTs Fetched from Blockchain: " + assets.length);
-
-    setNFTs(assets);
-    setLoadingState("loaded");
+    return assets;
   }
 
   if (loadingState === "loaded" && NFTs.length) {
@@ -63,7 +70,11 @@ export const NFTHome = () => {
             {NFTs.map((nft) => (
               <div key={nft.tokenId}>
                 <Link to={`/NFT/${nft.tokenId}`}>
-                  <ViewCard tokenId={nft.tokenId} name={nft.name} image={nft.image}/>
+                  <ViewCard
+                    tokenId={nft.tokenId}
+                    name={nft.name}
+                    image={nft.image}
+                  />
                 </Link>
               </div>
             ))}

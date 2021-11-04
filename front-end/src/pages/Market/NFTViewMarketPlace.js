@@ -9,6 +9,7 @@ import { useParams, useHistory } from "react-router";
 import { formatEther } from "@ethersproject/units";
 import Countdown from "react-countdown";
 import axios from "axios";
+import loading from "../../img/Loading.svg"
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -136,7 +137,9 @@ export const NFTViewMarketPlace = (props) => {
                 <div className="text-5xl font-Hanseif pb-1 mr-5">
                   #{NFTonAuction.tokenId}
                 </div>
-                <div className="text-5xl font-Hanseif pb-1 flex-1">{NFTonAuction.name}</div>
+                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                  {NFTonAuction.name}
+                </div>
               </div>
               <div className="p-2">"{NFTonAuction.description}"</div>
               <div className="p-2">
@@ -194,7 +197,11 @@ export const NFTViewMarketPlace = (props) => {
         </div>
       </div>
     );
-  return <h1>Loading</h1>;
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <img src={loading} alt="Loading" className="h-20" />
+    </div>
+  );
 };
 
 export default NFTViewMarketPlace;

@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import OnAuctionViewCard from "../Components/Card/OnAuctionViewCard";
 import NFTViewMarketPlace from "./Market/NFTViewMarketPlace";
 import axios from "axios";
+import loading from "../img/Loading.svg";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -57,7 +58,7 @@ const MarketPlace = () => {
             status: NFT.auctionStatus.toString(),
             image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
             name: meta.data.name,
-            description: meta.data.description
+            description: meta.data.description,
           };
           return asset;
         })
@@ -110,8 +111,8 @@ const MarketPlace = () => {
     );
   }
   return (
-    <div className="mx-auto text-center mt-40 mb-40 text-4xl font-semibold">
-      loading
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <img src={loading} alt="Loading" className="h-20" />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import { UserAccount } from "../../App";
 import placeHolder from "../../img/PlaceHolder.svg";
 import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
+import loading from "../../img/Loading.svg";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -69,7 +70,7 @@ export const NFTassetView = (props) => {
       owner: data.owner.toString(),
       image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
       name: meta.data.name,
-      description: meta.data.description
+      description: meta.data.description,
     };
 
     console.log("---NFT View (MyAssets)---");
@@ -259,7 +260,7 @@ export const NFTassetView = (props) => {
       parseInt(duration)
     );
     let tx = await transaction.wait();
-    
+
     console.log("---Auction Created---");
     console.log("Token ID: " + tx.events[2].args[0].toNumber());
     console.log("Block no.: " + tx.blockNumber);
@@ -463,10 +464,7 @@ export const NFTassetView = (props) => {
                         }`}
                         onClick={incrementDay}
                       >
-                        <svg
-                          viewBox="0 0 32 32"
-                          aria-hidden="true"
-                        >
+                        <svg viewBox="0 0 32 32" aria-hidden="true">
                           <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
                         </svg>
                       </div>
@@ -481,10 +479,7 @@ export const NFTassetView = (props) => {
                         }`}
                         onClick={decrementDay}
                       >
-                        <svg
-                          viewBox="0 0 32 32"
-                          aria-hidden="true"
-                        >
+                        <svg viewBox="0 0 32 32" aria-hidden="true">
                           <path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z" />
                         </svg>
                       </div>
@@ -503,10 +498,7 @@ export const NFTassetView = (props) => {
                         }`}
                         onClick={incrementHour}
                       >
-                        <svg
-                          viewBox="0 0 32 32"
-                          aria-hidden="true"
-                        >
+                        <svg viewBox="0 0 32 32" aria-hidden="true">
                           <path d="M15.997 13.374l-7.081 7.081L7 18.54l8.997-8.998 9.003 9-1.916 1.916z" />
                         </svg>
                       </div>
@@ -521,10 +513,7 @@ export const NFTassetView = (props) => {
                         }`}
                         onClick={decrementHour}
                       >
-                        <svg
-                          viewBox="0 0 32 32"
-                          aria-hidden="true"
-                        >
+                        <svg viewBox="0 0 32 32" aria-hidden="true">
                           <path d="M16.003 18.626l7.081-7.081L25 13.46l-8.997 8.998-9.003-9 1.917-1.916z" />
                         </svg>
                       </div>
@@ -756,6 +745,10 @@ export const NFTassetView = (props) => {
       </Router>
     );
   } else {
-    return <h1>Loading</h1>;
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <img src={loading} alt="Loading" className="h-20" />
+      </div>
+    );
   }
 };

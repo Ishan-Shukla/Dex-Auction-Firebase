@@ -8,9 +8,9 @@ import AUCTION from "../../artifacts/contracts/Auction/AuctionBase.sol/AuctionBa
 import { ethers } from "ethers";
 import { MetamaskProvider } from "../../App";
 import { UserAccount } from "../../App";
-import placeHolder from "../../img/PlaceHolder.svg";
 import { formatEther } from "@ethersproject/units";
 import axios from "axios";
+import loading from "../../img/Loading.svg";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -139,7 +139,9 @@ export const NFTauctionView = (props) => {
                 <div className="text-5xl font-Hanseif pb-1 mr-5">
                   #{NFTs.tokenId}
                 </div>
-                <div className="text-5xl font-Hanseif pb-1 flex-1">{NFTs.name}</div>
+                <div className="text-5xl font-Hanseif pb-1 flex-1">
+                  {NFTs.name}
+                </div>
                 <div className="flex-none place-self-end text-blue-400 animate-pulse">
                   &#8226;{status}
                 </div>
@@ -303,6 +305,10 @@ export const NFTauctionView = (props) => {
       </Router>
     );
   } else {
-    return <h1>Loading</h1>;
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <img src={loading} alt="Loading" className="h-20" />
+      </div>
+    );
   }
 };

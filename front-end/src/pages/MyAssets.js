@@ -12,6 +12,7 @@ import { MintButton } from "../Components/Buttons/MintButton";
 import { AssetButton } from "../Components/Buttons/AssetButton";
 import { AuctionButton } from "../Components/Buttons/AuctionButton";
 import { AuctionView } from "./MyAssets/AuctionView";
+import loading from "../img/Loading.svg";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -106,6 +107,10 @@ const MyAssets = () => {
       </Router>
     );
 
-  return <h1>Loading</h1>;
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <img src={loading} alt="Loading" className="h-20" />
+    </div>
+  );
 };
 export default MyAssets;

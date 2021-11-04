@@ -9,6 +9,7 @@ import { GoBack } from "../../Components/Buttons/GoBack";
 import { OnAuctionViewCard } from "../../Components/Card/OnAuctionViewCard";
 import { NFTauctionView } from "./NFTauctionView";
 import axios from "axios";
+import loading from "../../img/Loading.svg";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -59,7 +60,7 @@ export const AuctionView = (props) => {
             status: NFT.auctionStatus.toString(),
             image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
             name: meta.data.name,
-            description: meta.data.description
+            description: meta.data.description,
           };
           return asset;
         })
@@ -106,5 +107,9 @@ export const AuctionView = (props) => {
       </Router>
     );
   }
-  return <h1>Loading</h1>;
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <img src={loading} alt="Loading" className="h-20" />
+    </div>
+  );
 };

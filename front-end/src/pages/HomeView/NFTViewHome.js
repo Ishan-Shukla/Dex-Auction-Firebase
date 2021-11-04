@@ -5,6 +5,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import TopBar from "../../Components/Header/TopBar";
 import axios from "axios";
+import loading from "../../img/Loading.svg"
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -75,5 +76,9 @@ export const NFTViewHome = () => {
         </div>
       </div>
     );
-  return <h1>Loading</h1>;
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <img src={loading} alt="Loading" className="h-20" />
+    </div>
+  );
 };
