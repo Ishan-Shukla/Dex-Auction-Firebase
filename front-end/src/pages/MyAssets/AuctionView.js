@@ -10,6 +10,7 @@ import { OnAuctionViewCard } from "../../Components/Card/OnAuctionViewCard";
 import { NFTauctionView } from "./NFTauctionView";
 import axios from "axios";
 import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -21,6 +22,8 @@ export const AuctionView = (props) => {
 
   const provider = useContext(MetamaskProvider);
 
+  // Set Title
+  UseTitle("Auction View");
   useEffect(() => {
     if (loadingState === "not-loaded") {
       loadNFTs();

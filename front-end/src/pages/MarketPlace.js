@@ -7,6 +7,7 @@ import OnAuctionViewCard from "../Components/Card/OnAuctionViewCard";
 import NFTViewMarketPlace from "./Market/NFTViewMarketPlace";
 import axios from "axios";
 import loading from "../img/Loading.svg";
+import UseTitle from "../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -18,6 +19,9 @@ const MarketPlace = () => {
   const [onAuctions, setAuctions] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
 
+  // Set Title
+  UseTitle("MarketPlace");
+  
   useEffect(() => {
     if (loadingState === "not-loaded") {
       loadNFTs();

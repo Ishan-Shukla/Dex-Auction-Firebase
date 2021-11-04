@@ -5,7 +5,8 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import TopBar from "../../Components/Header/TopBar";
 import axios from "axios";
-import loading from "../../img/Loading.svg"
+import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -15,6 +16,9 @@ export const NFTViewHome = () => {
   const [NFTs, setNFT] = useState(); // Fetched NFTs details
 
   const { id } = useParams(); // TokenId of NFT received from URL
+
+  // Set Title
+  UseTitle(`Viewing NFT: ${id}`);
 
   // useEffect + loadingState
   useEffect(() => {

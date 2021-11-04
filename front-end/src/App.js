@@ -9,7 +9,9 @@ import Home from "./pages/Home";
 import MyAssets from "./pages/MyAssets";
 import MarketPlace from "./pages/MarketPlace";
 import { useHistory } from "react-router";
-import loading from "./img/Loading.svg"
+import loading from "./img/Loading.svg";
+import UseTitle from "./Components/Title/UseTitle";
+
 // Context for
 // User Account and Metamask Provider
 export const MetamaskProvider = React.createContext();
@@ -24,6 +26,9 @@ function App() {
 
   const web3modal = new Web3Modal(); // Instance of Web3Modal
   let web3; // web3 connect
+
+  // Set Title
+  UseTitle("DexAuction");
 
   // UseEffect + LoadingState
   useEffect(() => {
@@ -90,8 +95,10 @@ function App() {
 
   // if not connected to chainId other than 1337
   if (chainLock) {
-    return(
-      <div className="min-h-screen w-full flex items-center justify-center" ><img src={loading} alt="Loading" className="h-20"/></div>
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <img src={loading} alt="Loading" className="h-20" />
+      </div>
     );
   }
 

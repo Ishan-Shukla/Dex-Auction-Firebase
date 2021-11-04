@@ -9,7 +9,8 @@ import { useParams, useHistory } from "react-router";
 import { formatEther } from "@ethersproject/units";
 import Countdown from "react-countdown";
 import axios from "axios";
-import loading from "../../img/Loading.svg"
+import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -28,6 +29,9 @@ export const NFTViewMarketPlace = (props) => {
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
   const { id } = useParams();
+
+  // Set Title
+  UseTitle(`Auction NFT ${id}`);
 
   useEffect(() => {
     if (loadingState === "not-loaded") {

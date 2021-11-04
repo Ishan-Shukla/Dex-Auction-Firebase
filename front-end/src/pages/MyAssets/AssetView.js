@@ -9,6 +9,7 @@ import { GoBack } from "../../Components/Buttons/GoBack";
 import { NFTassetView } from "./NFTassetView";
 import axios from "axios";
 import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -21,6 +22,9 @@ export const AssetView = (props) => {
 
   const provider = useContext(MetamaskProvider);
 
+  // Set Title
+  UseTitle("AssetView");
+  
   useEffect(() => {
     if (loadingState === "not-loaded") {
       loadNFTs();

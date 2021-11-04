@@ -7,6 +7,7 @@ import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { GoBack } from "../../Components/Buttons/GoBack";
 import warning from "../../img/warning.svg";
 import { create as ipfsHttpClient } from "ipfs-http-client";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -14,6 +15,9 @@ const asset = process.env.REACT_APP_DEX_AUCTION;
 const Mint = (props) => {
   let history = useHistory();
 
+  // Set Title
+  UseTitle("Mint NFT");
+  
   const [isNameFilled, checkName] = useState(true);
   const [isDescriptionFilled, checkDescription] = useState(true);
   const [isFileSelected, checkFile] = useState(true);

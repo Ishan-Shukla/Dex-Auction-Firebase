@@ -11,6 +11,7 @@ import { UserAccount } from "../../App";
 import { formatEther } from "@ethersproject/units";
 import axios from "axios";
 import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const auction = process.env.REACT_APP_AUCTION_BASE;
@@ -31,6 +32,9 @@ export const NFTauctionView = (props) => {
     props.status("not-loaded");
   };
 
+  // Set Title
+  UseTitle(`NFT ${id}`);
+  
   useEffect(() => {
     loadNFTs();
   }, []);

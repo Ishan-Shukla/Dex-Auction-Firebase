@@ -12,6 +12,7 @@ import placeHolder from "../../img/PlaceHolder.svg";
 import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
 import loading from "../../img/Loading.svg";
+import UseTitle from "../../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -22,6 +23,9 @@ export const NFTassetView = (props) => {
   const nfts = useContext(NFT);
   const { id, index } = useParams();
 
+  // Set Title
+  UseTitle(`NFT ${id}`)
+  
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
   const [loadingState, setLoadingState] = useState("not-loaded");

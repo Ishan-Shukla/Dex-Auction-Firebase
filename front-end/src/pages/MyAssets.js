@@ -13,6 +13,7 @@ import { AssetButton } from "../Components/Buttons/AssetButton";
 import { AuctionButton } from "../Components/Buttons/AuctionButton";
 import { AuctionView } from "./MyAssets/AuctionView";
 import loading from "../img/Loading.svg";
+import UseTitle from "../Components/Title/UseTitle";
 
 require("dotenv");
 const asset = process.env.REACT_APP_DEX_AUCTION;
@@ -26,6 +27,9 @@ const MyAssets = () => {
 
   const provider = useContext(MetamaskProvider);
   const Account = useContext(UserAccount);
+
+  // Set Title
+  UseTitle("My Assets");
 
   useEffect(() => {
     if (loadingState === "not-loaded") {
