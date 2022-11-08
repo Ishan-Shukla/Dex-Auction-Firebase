@@ -20,8 +20,8 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 module.exports = {
   solidity: {
     version: "0.8.0",
-    paths:{
-      artifacts: "./front-end/src/artifacts"
+    paths: {
+      artifacts: "./front-end/src/artifacts",
     },
     // settings : {
     //   optimizer: {
@@ -33,7 +33,11 @@ module.exports = {
   networks: {
     hardhat: {
       name: "localhost",
-      chainId: 1337
+      chainId: 1337,
+    },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/fd1917e997924da49884de60bfebe3f6",
+      accounts: ["0xabc123abc123abc123abc123abc123abc123abc123abc123abc123abc123abc1"],
     },
     // ropsten: {
     //   url: process.env.ROPSTEN_URL || "",

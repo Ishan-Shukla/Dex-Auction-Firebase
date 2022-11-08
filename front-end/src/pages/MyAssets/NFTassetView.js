@@ -72,7 +72,7 @@ export const NFTassetView = (props) => {
     const assetNFT = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner.toString(),
-      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      image: meta.data.NFTHash,
       name: meta.data.name,
       description: meta.data.description,
     };
@@ -261,7 +261,8 @@ export const NFTassetView = (props) => {
     let transaction = await contract.CreateAuction(
       tokenId,
       ethers.utils.parseEther(price),
-      parseInt(duration)
+      // parseInt(duration)
+      90
     );
     let tx = await transaction.wait();
 

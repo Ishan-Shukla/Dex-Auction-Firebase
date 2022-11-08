@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import ASSET from "../../artifacts/contracts/DexAuction.sol/DeXAuction.json";
 import { ethers } from "ethers";
 import ViewCard from "../../Components/Card/ViewCard";
 import axios from "axios";
+import { MetamaskProvider } from "../../App";
 
 // ABI import
 require("dotenv");
@@ -13,6 +14,7 @@ export const NFTHome = () => {
   const [NFTs, setNFTs] = useState([]); // Fetched NFTs (All NFTs Minted)
   const [loadingState, setLoadingState] = useState("not-loaded"); // Loading state for main return
 
+  const Provider = useContext(MetamaskProvider);
   // useEffect + loadingState
   useEffect(() => {
     let continueLoading = true;
@@ -31,8 +33,9 @@ export const NFTHome = () => {
 
   // Fetch NFTs from Blockchain
   async function loadNFTs() {
-    const Provider = new ethers.providers.JsonRpcProvider(); // JsonRpcProvider
+    // const Provider = new ethers.providers.JsonRpcProvider(); // JsonRpcProvider
     const contract = new ethers.Contract(asset, ASSET.abi, Provider);
+    console.log(contract);
     const data = await contract.getAllAssets(); // Fetched data from blockchain
     const blackHole = "0x0000000000000000000000000000000000000000"; // BlackHole Address
     let counter = 0; // Index Counter
@@ -48,7 +51,7 @@ export const NFTHome = () => {
           let asset = {
             tokenId: NFT.tokenId.toNumber(),
             owner: NFT.owner,
-            image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+            image: meta.data.NFTHash,
             name: meta.data.name,
             description: meta.data.description,
             index: counter++,

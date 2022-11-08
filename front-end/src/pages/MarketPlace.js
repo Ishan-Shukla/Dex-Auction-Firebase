@@ -60,7 +60,7 @@ const MarketPlace = () => {
             duration: NFT.duration.toNumber(),
             startAt: NFT.startAt.toNumber(),
             status: NFT.auctionStatus.toString(),
-            image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+            image: meta.data.NFTHash,
             name: meta.data.name,
             description: meta.data.description,
           };

@@ -4,7 +4,6 @@ import Content from "../Components/Landing/Content";
 import { NFTViewHome } from "./HomeView/NFTViewHome";
 import { NFTHome } from "./HomeView/NFTHome";
 import TopBar from "../Components/Header/TopBar";
-import TestWorking from "../Components/practice/TestWorking";
 
 const Home = () => {
   return (
@@ -18,7 +17,6 @@ const Home = () => {
         <div>
           <NFTHome /> {/* NFTs Card view */}
         </div>
-        {/* </div> */}
       </Route>
       <Route path="/NFT/:id">
         <NFTViewHome /> {/* Particular NFT's details */}

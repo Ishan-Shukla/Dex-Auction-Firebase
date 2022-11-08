@@ -40,7 +40,7 @@ export const NFTViewHome = () => {
     const nft = {
       tokenId: data.tokenId.toNumber(),
       owner: data.owner,
-      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      image: meta.data.NFTHash,
       name: meta.data.name,
       description: meta.data.description,
     };

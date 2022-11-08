@@ -55,7 +55,7 @@ export const NFTauctionView = (props) => {
       duration: data.duration.toNumber(),
       startAt: data.startAt.toNumber(),
       status: data.auctionStatus.toString(),
-      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      image: meta.data.NFTHash,
       name: meta.data.name,
       description: meta.data.description,
     };
@@ -159,8 +159,8 @@ export const NFTauctionView = (props) => {
               <div className="p-2">maxBidPrice- {NFTs.maxBidPrice} ETH</div>
               <div className="p-2">maxBidder- {NFTs.maxBidder}</div>
               <div className="p-2">Duration- {NFTs.duration / 3600} Hrs</div>
-              <div className="p-2">Start At- {NFTs.startAt}</div>
-              <div className="p-2">Status- {NFTs.status}</div>
+              {/* <div className="p-2">Start At- {NFTs.startAt}</div> */}
+              {/* <div className="p-2">Status- {NFTs.status}</div> */}
               <button
                 onClick={openCancelModal}
                 className="p-4 mt-auto transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"

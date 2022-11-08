@@ -110,7 +110,7 @@ contract ERC721 is ERC165, IERC721Metadata {
      * by default, can be overriden in child contracts.
      */
     function _baseURI() internal view virtual returns (string memory) {
-        return "http://127.0.0.1:8080/ipfs/";
+        return "";
     }
 
     /**

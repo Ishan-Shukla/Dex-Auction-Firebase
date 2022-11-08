@@ -1,3 +1,3 @@
 require("dotenv").config();
-export const asset = process.env.REACT_APP_DeX_Auction;
-export const auction = process.env.REACT_APP_Auction_Base;
+export const DexAuction = process.env.REACT_APP_DEX_AUCTION;
+export const Auction = process.env.REACT_APP_DEX_AUCTION;

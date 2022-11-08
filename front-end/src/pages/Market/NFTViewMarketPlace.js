@@ -68,7 +68,7 @@ export const NFTViewMarketPlace = (props) => {
       duration: data.duration.toNumber(),
       startAt: data.startAt.toNumber(),
       status: data.auctionStatus.toString(),
-      image: `http://127.0.0.1:8080/ipfs/${meta.data.NFTHash}`,
+      image: meta.data.NFTHash,
       name: meta.data.name,
       description: meta.data.description,
     };
@@ -146,10 +146,10 @@ export const NFTViewMarketPlace = (props) => {
                 </div>
               </div>
               <div className="p-2">"{NFTonAuction.description}"</div>
-              <div className="p-2">
+              {/* <div className="p-2">
                 <div>Owner</div>
                 <div className="pl-4">{NFTonAuction.seller}</div>
-              </div>
+              </div> */}
               {!isSeller(NFTonAuction.seller) ? (
                 <div className="p-2">Seller- {NFTonAuction.seller}</div>
               ) : null}
@@ -163,13 +163,15 @@ export const NFTViewMarketPlace = (props) => {
                   <div className="p-2">
                     Current Price- {NFTonAuction.maxBidPrice} ETH
                   </div>
-                  <div className="p-2">
-                    Time Left-
-                    <Countdown
-                      date={Date.now() + countdownTime * 1000}
-                      className="font-bold"
-                    />
-                  </div>
+                  {claim ? null : (
+                    <div className="p-2">
+                      Time Left-
+                      <Countdown
+                        date={Date.now() + countdownTime * 1000}
+                        className="font-bold"
+                      />
+                    </div>
+                  )}
                 </>
               )}
               <div className="mt-auto">
@@ -194,7 +196,14 @@ export const NFTViewMarketPlace = (props) => {
                     </button>
                   </div>
                 )}
-                {claim ? <button onClick={claimNFT}>Claim NFT</button> : null}
+                {claim ? (
+                  <button
+                    className="flex items-center justify-center p-4 m-2 transition ease-in duration-200 uppercase rounded-full hover:bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none"
+                    onClick={claimNFT}
+                  >
+                    Claim NFT
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
