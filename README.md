@@ -12,7 +12,7 @@ This project does not seek to provide a full coverage of NFT Marketplace but ful
 
 ## Technical Details (PoC)
 
-The section discusses the technical parameters used in the Hyperledger Fabric, the Expresss API, and the React front-end.
+The section discusses the technical parameters used in the Solidity, the Firebase Storage, and the React front-end.
 
 ### Architecture
 
@@ -24,3 +24,7 @@ React is the demonstration front-end for login to localhost Blockchain network. 
 
 **Firebase Storage**
 Firebase Storage is used for storing NFTs and their respective Metadata. And its metadeta URL is then linked with NFT in blockchain. Currently only uploading and downloading in implemented modifying and deleting is not supported.
+
+### Smart Contract Structure
+
+![](./documentation/Dex-Auction.svg)
