@@ -41,5 +41,80 @@ Firebase Storage is used for storing NFTs and their respective Metadata. And its
 
 ![](./documentation/Dex-Auction.svg)
 
-### UI/UX
+## UI/UX Samples
+
+### Homepage
+
+https://user-images.githubusercontent.com/65531749/201182913-a184530f-ffe9-4ef6-af71-d9ed04ef0727.mp4
+
+### Mint NFT
+
+https://user-images.githubusercontent.com/65531749/201183149-28e8c964-e657-4d86-98aa-d3a7f17c53d5.mp4
+
+### Burn NFT
+
+https://user-images.githubusercontent.com/65531749/201183227-e5a46fe3-37e6-4e5d-ac19-3daec1111d41.mp4
+
+### Create Auction
+
+https://user-images.githubusercontent.com/65531749/201183391-175004b4-430a-47c5-bd8d-a49cf942d93f.mp4
+
+### Bidding
+
+https://user-images.githubusercontent.com/65531749/201183600-fc5e25df-59f8-44a4-aac0-d8c094acd73c.mp4
+
+### Cancel Auction
+
+https://user-images.githubusercontent.com/65531749/201183447-9a26297e-cc87-4a32-a2c6-c02beb9a9b13.mp4
+
+### Claim NFT
+
+https://user-images.githubusercontent.com/65531749/201183656-972fffb9-bce2-44ba-9501-d5bd4a98ad4b.mp4
+
+## Run Locally
+
+### Clone the Project
+
+```bash
+  git clone https://github.com/Ishan-Shukla/Dex-Auction-Firebase.git
+```
+
+Go to the project directory
+```bash
+  cd my-project
+```
+
+Install Dependencies
+```bash
+  npm install
+  cd front-end
+  npm install
+  cd ../
+```
+
+Start Blockchain locally
+```bash
+  npm run node
+```
+
+To deploy smart contract
+```bash
+  npm run deploy
+```
+
+To deploy and populate with NFTs
+```bash
+  npm run populate
+```
+_Note: Either run deploy or populate don't run both together_
+
+To start frontend
+```bash
+  npm run start
+```
+
+To run smart contract test script
+```bash
+  npm run test
+```
 
