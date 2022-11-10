@@ -1,3 +1,7 @@
+<a href="https://marked.js.org">
+  <img width="60px" height="60px" src="front-end/src/img/Logo.svg" align="right" />
+</a>
+
 # Dex-Auction
 
 (An NFT marketplace built on Ethereum Blockchain)
@@ -9,6 +13,14 @@ Non-fungible tokens (NFTs) are cryptographic assets on a blockchain with unique 
 Blockchain technology and NFTs afford artists and content creators a unique opportunity to monetize their wares. For example, artists no longer have to rely on galleries or auction houses to sell their art. Instead, the artist can sell it directly to the consumer as an NFT, which also lets them keep more of the profits. In addition, artists can program in royalties so they’ll receive a percentage of sales whenever their art is sold to a new owner. This is an attractive feature as artists generally do not receive future proceeds after their art is first sold.
 
 This project does not seek to provide a full coverage of NFT Marketplace but fulfills all major requirements. 
+
+## Tech Stack
+
+**Client:** _React_, _TailwindCSS_, _axios_, _react-router_, _uuid_, _web3modal_
+
+**Server:** _firebase_, ~~IPFS~~
+
+**Blockchain:** _solidity_, _ethers_, _hardhat_, _ethereum-waffle_, _chai_
 
 ## Technical Details (PoC)
 
@@ -28,3 +40,6 @@ Firebase Storage is used for storing NFTs and their respective Metadata. And its
 ### Smart Contract Structure
 
 ![](./documentation/Dex-Auction.svg)
+
+### UI/UX
+
