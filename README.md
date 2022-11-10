@@ -1,4 +1,4 @@
-<a href="https://marked.js.org">
+<a href="https://github.com/Ishan-Shukla/Dex-Auction-Firebase">
   <img width="60px" height="60px" src="front-end/src/img/Logo.svg" align="right" />
 </a>
 
