@@ -7,7 +7,8 @@
     "node": "npx hardhat node ",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "populate": "npx hardhat run scripts/populate.js --network localhost",
-    "start": "cd front-end && npm run start"
+    "start": "cd front-end && npm run start",
+    "test": "npx hardhat test"
   },
   "repository": {
     "type": "git",
