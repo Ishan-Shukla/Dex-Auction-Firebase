@@ -18,7 +18,7 @@ This project does not seek to provide a full coverage of NFT Marketplace but ful
 
 **Client:** _React_, _TailwindCSS_, _axios_, _react-router_, _uuid_, _web3modal_
 
-**Server:** _firebase_, ~~IPFS~~
+**NFT Storage:** _firebase_, ~~IPFS~~
 
 **Blockchain:** _solidity_, _ethers_, _hardhat_, _ethereum-waffle_, _chai_
 
